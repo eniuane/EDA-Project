@@ -60,6 +60,8 @@ public class StackTester {
 			out.println("Push " + limit + " times, Mediana = " + median + " Max = " + timers[timers.length - 1]
 					+ " Min = " + timers[0] + " Sum = " + sumOfTimers + " Average = " + averageOfTimers
 					+ " Average used memory " + averageOfMemories + " bytes");
+			
+			out.println("LALALALALa");
 
 		}
 	}
