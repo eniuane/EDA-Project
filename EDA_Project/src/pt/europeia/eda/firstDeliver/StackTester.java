@@ -11,17 +11,16 @@ public class StackTester {
 
 	public static void main(String[] args) {
 
-		final Stack<Integer> stackOfInts = new Stack<Integer>();
-
 		int maxReps = 100;
 		double[] timers = new double[maxReps];
 		long memory = 0;
 		long[] memories = new long[maxReps];
 		double estimatedTime = 0;
 
-		for (int limit = 1, exponent = 0; exponent != 20; exponent++, limit *= 2) {
+		for (int limit = 1, exponent = 0; exponent != 31; exponent++, limit *= 2) {
 			for (int i = 0; i < maxReps; i++) {
 
+				final Stack<Integer> stackOfInts = new Stack<Integer>();
 				Runtime runtime = Runtime.getRuntime();
 				final Stopwatch stopwatch = new Stopwatch();
 				for (int j = 0; j < limit; j++)
@@ -47,13 +46,12 @@ public class StackTester {
 			double averageOfMemories = 0;
 			double sumOfTimers = 0;
 			double sumOfMemories = 0;
-			
 
-			for (int k = 0; k < maxReps; k++){
+			for (int k = 0; k < maxReps; k++) {
 				sumOfTimers = sumOfTimers + timers[k];
-				sumOfMemories = sumOfMemories +  memories[k];
+				sumOfMemories = sumOfMemories + memories[k];
 			}
-			
+
 			averageOfTimers = sumOfTimers / maxReps;
 			averageOfMemories = sumOfMemories / maxReps;
 

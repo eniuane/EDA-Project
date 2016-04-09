@@ -9,16 +9,17 @@ import pt.europeia.eda.Stopwatch;
 public class LinkedStackTester {
 	public static void main(String[] args) {
 
-		final LinkedStack<Integer> linkedStackOfInts = new LinkedStack<Integer>();
 		int maxReps = 100;
 		double[] timers = new double[maxReps];
 		long memory = 0;
 		long[] memories = new long[maxReps];
 		double estimatedTime = 0;
 
-		for (int limit = 1, exponent = 0; exponent != 20; exponent++, limit *= 2) {
+		for (int limit = 1, exponent = 0; exponent != 31; exponent++, limit *= 2) {
 
 			for (int i = 0; i < maxReps; i++) {
+				
+				final LinkedStack<Integer> linkedStackOfInts = new LinkedStack<Integer>();
 
 				Runtime runtime = Runtime.getRuntime();
 				final Stopwatch stopwatch = new Stopwatch();
