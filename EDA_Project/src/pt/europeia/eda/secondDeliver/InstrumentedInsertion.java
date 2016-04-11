@@ -56,4 +56,8 @@ public class InstrumentedInsertion {
 	public static int getNumberOfArrayAccesses() {
 		return numberOfArrayReads + numberOfArrayWrites;
 	}
+	
+	public static int getNumberOfSwaps() {
+		return numberOfSwaps;
+	}
 }

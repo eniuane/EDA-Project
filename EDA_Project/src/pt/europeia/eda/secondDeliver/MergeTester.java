@@ -16,9 +16,9 @@ public class MergeTester {
 		double estimatedTime = 0;
 		double averageTime = 0;
 		double median = 0;
-		double[] estimatedTimeArray = new double[maxReps + 1];
+		double[] estimatedTimeArray = new double[maxReps];
 		
-		for(int i = 1; i <= maxReps; i++)
+		for(int i = 0; i < maxReps; i++)
 		{
 			final In inPartiallySorted = new In(arguments[0]);
 			
