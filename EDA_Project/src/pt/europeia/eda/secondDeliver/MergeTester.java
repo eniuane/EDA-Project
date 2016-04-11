@@ -11,14 +11,14 @@ public class MergeTester {
 	
 	public static void main(final String[] arguments) {
 
-		int maxReps = 5;
+		int maxReps = 1000;
 		int middle = 0;
 		double estimatedTime = 0;
 		double averageTime = 0;
 		double median = 0;
-		double[] estimatedTimeArray = new double[maxReps + 1];
+		double[] estimatedTimeArray = new double[maxReps];
 		
-		for(int i = 1; i <= maxReps; i++)
+		for(int i = 0; i < maxReps; i++)
 		{
 			final In inPartiallySorted = new In(arguments[0]);
 			
@@ -32,8 +32,6 @@ public class MergeTester {
 			estimatedTimeArray[i] = estimatedTime;
 		}
 		
-		out.println("Average Time: " + averageTime/maxReps);
-		
 		Arrays.sort(estimatedTimeArray);
 		
 		middle = estimatedTimeArray.length / 2;
@@ -43,7 +41,7 @@ public class MergeTester {
 		else
 			median = estimatedTimeArray[middle];
 		
-		out.println("Median: " + median);
+		out.println("Sorted the '" + arguments[0] + "' Median = " + median + " Average = " + averageTime / maxReps);
 	}
 	
 	public static Double[] readAllDoubles(In in) {
