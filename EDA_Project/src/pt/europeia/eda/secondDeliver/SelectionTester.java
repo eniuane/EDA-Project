@@ -7,7 +7,7 @@ import static pt.europeia.eda.Tools.out;
 
 import java.util.Arrays;
 
-public class MergeTester {
+public class SelectionTester {
 	
 	public static void main(final String[] arguments) {
 
@@ -25,7 +25,7 @@ public class MergeTester {
 			final Double[] partiallySortedNumbersDouble= readAllDoubles(inPartiallySorted);
 			
 			final Stopwatch stopwatch = new Stopwatch();
-			Merge.sort(partiallySortedNumbersDouble);
+			Selection.sort(partiallySortedNumbersDouble);
 			estimatedTime = stopwatch.elapsedTime();
 			
 			averageTime += estimatedTime;
