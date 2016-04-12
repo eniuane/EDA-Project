@@ -2,6 +2,8 @@ package pt.europeia.eda.firstDeliver;
 
 import static java.lang.System.out;
 
+import java.lang.reflect.Array;
+
 import pt.europeia.eda.Stopwatch;
 
 import java.util.ArrayList;
@@ -94,12 +96,18 @@ public class Tester {
 	// Estimate the number of contiguous repetitions to perform for a given
 	// limit of the numbers to sum in the experiment:
 	public static int contiguousRepetitionsFor(final int limit) {
+		// final ArrayList<Stack<Integer>> arrayOfIntStacks = new ArrayList<Stack<Integer>>();
+		// final Stack<Integer>[] arrayOfIntStacks = new Stack<Integer>[];
+		
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
 			final Stack<Integer> stackOfInts = new Stack<Integer>();
-			stackOfInts.push(limit);
-			contiguousRepetitions++;
+			for (int i = 0; i != limit; i++) {
+				stackOfInts.push(limit);
+				contiguousRepetitions++;
+			}
+
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
 
 		// The loop stops when the minimum time per contiguous repetitions is
@@ -117,9 +125,10 @@ public class Tester {
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			//sum = sumFrom1To(limit);
 			final Stack<Integer> stackOfInts = new Stack<Integer>();
-			stackOfInts.push(limit);
+			for (int j = 0; j != limit; j++) {
+				stackOfInts.push(j);
+			}
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
