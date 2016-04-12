@@ -97,7 +97,8 @@ public class Tester {
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			sum = sumFrom1To(limit);
+			final Stack<Integer> stackOfInts = new Stack<Integer>();
+			stackOfInts.push(limit);
 			contiguousRepetitions++;
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
 
@@ -115,8 +116,11 @@ public class Tester {
 	// argument.
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
 		final Stopwatch stopwatch = new Stopwatch();
-		for (int i = 0; i != contiguousRepetitions; i++)
-			sum = sumFrom1To(limit);
+		for (int i = 0; i != contiguousRepetitions; i++) {
+			//sum = sumFrom1To(limit);
+			final Stack<Integer> stackOfInts = new Stack<Integer>();
+			stackOfInts.push(limit);
+		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
 
@@ -133,8 +137,6 @@ public class Tester {
 		final int contiguousRepetitions = contiguousRepetitionsFor(limit);
 		long repetitions = 0;
 		do {
-			final Stack<Integer> stackOfInts = new Stack<Integer>();
-			stackOfInts.push(limit);
 			executionTimes.add(executionTimeFor(limit, contiguousRepetitions));
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
