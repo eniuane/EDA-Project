@@ -8,48 +8,14 @@ import pt.europeia.eda.Stopwatch;
 
 import java.util.ArrayList;
 
-/**
- * A simple class/program for obtaining experimentally the execution times of a
- * method summing all integers from 1 to different limits. This may help you
- * devise your own experiments in other cases, but it is *not* intended has a
- * basis for your own code, however. You should study this code carefully and
- * apply the insights gained to your own code. This code is not intended to be
- * in any way complete or to cover all interesting cases. Try to run these
- * tests. Copy the results to «Data» in http://gnuplot.respawned.com/. Then
- * copy the following Gnuplot script to «Plot script»: - set terminal svg size
- * 800,600 enhanced fname 'arial' fsize 10 butt solid set output 'out.svg' set
- * key inside bottom right set xlabel 'sum limit' set ylabel 'time (s)' set
- * y2label 'repetitions' set title 'Execution times of sum of integers from 1 to
- * limit' set logscale x 2 set logscale y 10 set logscale y2 10 set grid set
- * xtics 2 rotate by 90 right format '%.0f' set y2tics format '%g' plot
- * "data.txt" using 1:2 title 'times' with linespoints, "data.txt" using 1:3
- * title 'number of repetitions' axes x1y2
- *
- * The output looks something like the following: - 1 1.7222222222222222E-9
- * 2994343 1 2 1.8181818181818182E-9 3042602 3 4 3.110236220472441E-9 1953040 10
- * 8 3.4736842105263155E-9 2688197 36 16 7.256637168141593E-9 1039035 136 32
- * 1.4788235294117648E-8 684341 528 64 3.78375E-8 303032 2080 128 6.95E-8 220936
- * 8256 256 1.3697777777777777E-7 148977 32896 512 2.7014285714285713E-7 474764
- * 131328 1024 5.292666666666667E-7 115504 524800 2048 1.0325E-6 111311 2098176
- * 4096 2.06125E-6 110075 8390656 8192 4.109E-6 74700 33558528 16384 8.202E-6
- * 56547 134225920 32768 1.6403E-5 56430 536887296 65536 3.2788E-5 28260
- * 2147516416 131072 6.7092E-5 14111 8590000128 262144 1.30921E-4 7172
- * 34359869440 524288 2.68528E-4 3529 137439215616 1048576 5.376924999999999E-4
- * 1784 549756338176 2097152 0.001090812 880 2199024304128 4194304 0.002233815
- * 433 8796095119360 8388608 0.004413868499999999 218 35184376283136 16777216
- * 0.008761125 111 140737496743936 33554432 0.017682951000000002 54
- * 562949970198528 67108864 0.035165623 27 2251799847239680 134217728
- * 0.073582029 13 9007199321849856 268435456 0.1465926465 6 36028797153181696
- * 536870912 0.29062364 3 144115188344291328 1073741824 0.57687999 1
- * 576460752840294400
- */
 public class Tester {
 	// A time budget is established per experiment. Each experiment is repeated
 	// as many times as necessary to expend this budget. That is, each
 	// experiment is repeated until the total time spent repeating it exceeds
 	// the budget.
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
-
+	public static final double maxTime = 4.0 /* seconds */;
+	
 	// Small execution times are very "noisy", since the System.nanoTime()
 	// method does not have sufficient precision to measure them. In some
 	// systems, smaller execution times may even be measured as 0.0! Hence, in
@@ -79,34 +45,21 @@ public class Tester {
 			return values.get(size / 2);
 	}
 
-	// The method whose execution times are wanted:
-	public static long sumFrom1To(final int limit) {
-		long sum = 0;
-		for (int i = 1; i <= limit; i++)
-			sum += i;
-		return sum;
-	}
-
-	// Used to store the results of the sums, so that the Java compiler does not
-	// optimize away our calls to sumFrom1To() (this variable is used when
-	// showing the experimental results, so we don't get warnings
-	// about unused variables):
-	private static long sum;
-
 	// Estimate the number of contiguous repetitions to perform for a given
 	// limit of the numbers to sum in the experiment:
 	public static int contiguousRepetitionsFor(final int limit) {
-		// final ArrayList<Stack<Integer>> arrayOfIntStacks = new ArrayList<Stack<Integer>>();
+		// final ArrayList<Stack<Integer>> arrayOfIntStacks = new
+		// ArrayList<Stack<Integer>>();
 		// final Stack<Integer>[] arrayOfIntStacks = new Stack<Integer>[];
-		
+
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
 			final Stack<Integer> stackOfInts = new Stack<Integer>();
 			for (int i = 0; i != limit; i++) {
-				stackOfInts.push(limit);
-				contiguousRepetitions++;
+				stackOfInts.push(i);
 			}
+			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
 
@@ -123,12 +76,17 @@ public class Tester {
 	// to a given limit. The number of contiguous experiments is also passed as
 	// argument.
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
+		final ArrayList<Stack<Integer>> stacks = new ArrayList<Stack<Integer>>();
+		for (int i = 0; i != contiguousRepetitions; i++)
+			stacks.add(new Stack<Integer>());
+
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Stack<Integer> stackOfInts = new Stack<Integer>();
+			final Stack<Integer> stackOfInts = stacks.get(i);
 			for (int j = 0; j != limit; j++) {
 				stackOfInts.push(j);
 			}
+			stacks.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
@@ -140,32 +98,31 @@ public class Tester {
 	// budged is spent. The sequence of the execution times obtained is then
 	// used to calculate the median execution time, which is a reasonably robust
 	// statistic. The results are shown, except if this is a warm up run.
-	public static void performExperimentsFor(final int limit, final boolean isWarmup) {
+	public static double performExperimentsFor(final int limit, final boolean isWarmup) {
 		final ArrayList<Double> executionTimes = new ArrayList<Double>();
 		final Stopwatch stopwatch = new Stopwatch();
 		final int contiguousRepetitions = contiguousRepetitionsFor(limit);
 		long repetitions = 0;
+		final Stopwatch stopwatchMax = new Stopwatch();
 		do {
 			executionTimes.add(executionTimeFor(limit, contiguousRepetitions));
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
-
+		
+		double timeOfexperiment = stopwatchMax.elapsedTime();
+		
 		final double median = medianOf(executionTimes);
 
 		if (!isWarmup)
-			out.println("Made " + limit + " pushes\tmedian= " + median + "\tReps= " + repetitions + "\tSum= " + sum);
-		/*-
-		out.println("Sum from 1 to " + limit + " = " + sum + " [" + median
-		        + "s median time based on " + repetitions
-		        + " repetitions of " + contiguousRepetitions
-		        + " contiguous repetitions]");
-		*/
+			out.println("Made " + limit + " pushes\tmedian= " + median + "\tReps= " + repetitions);
+		
+		return timeOfexperiment;
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
 		// The experiments are run for limits of the sums which increase
 		// geometrically, through the powers of 2:
-
+		double experiment = 0.0;
 		// Warm up (this attempts to force the JIT compiler to do its work
 		// before the experiments actually begin):
 		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
@@ -173,8 +130,11 @@ public class Tester {
 
 		// The actual experiments are performed here, with limits going from 1
 		// to 2^30:
-		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2)
-			performExperimentsFor(limit, false);
+		do{
+		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2) 
+			experiment = performExperimentsFor(limit, false);
+		}
+		while(experiment<maxTime);
 	}
 
 }
