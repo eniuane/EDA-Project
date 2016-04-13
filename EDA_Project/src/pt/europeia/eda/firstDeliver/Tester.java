@@ -3,10 +3,13 @@ package pt.europeia.eda.firstDeliver;
 import static java.lang.System.out;
 
 import java.lang.reflect.Array;
+import java.security.AllPermission;
 
 import pt.europeia.eda.Stopwatch;
 
 import java.util.ArrayList;
+
+import static pt.europeia.eda.ObjectSizeFetcher.sizeOf;
 
 public class Tester {
 	// A time budget is established per experiment. Each experiment is repeated
@@ -14,6 +17,7 @@ public class Tester {
 	// experiment is repeated until the total time spent repeating it exceeds
 	// the budget.
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+	
 	public static final double maxTime = 4.0 /* seconds */;
 	
 	// Small execution times are very "noisy", since the System.nanoTime()
@@ -98,43 +102,55 @@ public class Tester {
 	// budged is spent. The sequence of the execution times obtained is then
 	// used to calculate the median execution time, which is a reasonably robust
 	// statistic. The results are shown, except if this is a warm up run.
-	public static double performExperimentsFor(final int limit, final boolean isWarmup) {
+	public static void performExperimentsFor(final int limit, final boolean isWarmup) {
 		final ArrayList<Double> executionTimes = new ArrayList<Double>();
 		final Stopwatch stopwatch = new Stopwatch();
 		final int contiguousRepetitions = contiguousRepetitionsFor(limit);
 		long repetitions = 0;
-		final Stopwatch stopwatchMax = new Stopwatch();
 		do {
 			executionTimes.add(executionTimeFor(limit, contiguousRepetitions));
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 		
-		double timeOfexperiment = stopwatchMax.elapsedTime();
-		
 		final double median = medianOf(executionTimes);
 
 		if (!isWarmup)
-			out.println("Made " + limit + " pushes\tmedian= " + median + "\tReps= " + repetitions);
+		{
+			final Stack<Integer> stackOfInts = new Stack<Integer>();
+			for (int i = 0; i != limit ; i++)
+				stackOfInts.push(i);
+			
+			out.println("Made " + limit + " pushes \t Memory = "+ allSizeOf(stackOfInts) +"bytes \t median= " + median + "\t Reps= " + repetitions);
+		}
+	}
+	
+	public static long allSizeOf(final Stack<Integer> stack) {
 		
-		return timeOfexperiment;
+		long totalMemory = sizeOf(stack);
+
+		for (Integer item : stack)
+			totalMemory += sizeOf(item);
+
+		return totalMemory;
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
 		// The experiments are run for limits of the sums which increase
 		// geometrically, through the powers of 2:
-		double experiment = 0.0;
+		
 		// Warm up (this attempts to force the JIT compiler to do its work
 		// before the experiments actually begin):
+		
+		//out.println(sizeOf(new Stack<Integer>()));
+		
 		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
 		// The actual experiments are performed here, with limits going from 1
 		// to 2^30:
-		do{
 		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2) 
-			experiment = performExperimentsFor(limit, false);
-		}
-		while(experiment<maxTime);
+			performExperimentsFor(limit, false);
+
 	}
 
 }
