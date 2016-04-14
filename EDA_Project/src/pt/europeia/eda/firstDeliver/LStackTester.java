@@ -9,6 +9,8 @@ import pt.europeia.eda.Stopwatch;
 
 import java.util.ArrayList;
 
+import edu.princeton.cs.algs4.Average;
+
 import static pt.europeia.eda.ObjectSizeFetcher.sizeOf;
 
 public class LStackTester {
@@ -45,6 +47,18 @@ public class LStackTester {
 			return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
 		else
 			return values.get(size / 2);
+	}
+	
+	public static double averageOf(final ArrayList<Double> values){
+		double sum = 0.0;
+		
+		if(values.size()==1)
+			return values.get(0);
+		
+		for(int i = 0; i != values.size() - 1; i++)
+			sum += values.get(i);
+		
+		return sum / values.size();
 	}
 
 	// Estimate the number of contiguous repetitions to perform for a given
@@ -107,6 +121,7 @@ public class LStackTester {
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 		
 		final double median = medianOf(executionTimes);
+		final double average = averageOf(executionTimes);
 
 		if (!isWarmup)
 		{
@@ -114,7 +129,10 @@ public class LStackTester {
 			for (int i = 0; i != limit ; i++)
 				stackOfInts.push(i);
 			
-			out.println("Made " + limit + " pushes \t Memory =  /*+ allSizeOf(stackOfInts) +*/bytes \t median= " + median + "\t Reps= " + repetitions);
+			out.println("Made " + limit + " pushes \t median= " + median + "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions);
+			
+			if(repetitions == 1)
+				System.exit(1);
 		}
 	}
 	
