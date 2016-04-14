@@ -24,6 +24,18 @@ public class InsertionShuffleTester {
 		else
 			return values.get(size / 2);
 	}
+	
+	public static double averageOf(final ArrayList<Double> values){
+		double sum = 0.0;
+		
+		if(values.size() == 1)
+			return values.get(0);
+		
+		for(int i = 0; i != values.size() - 1; i++)
+			sum += values.get(i);
+		
+		return sum / values.size();
+	}
 
 	public static int contiguousRepetitionsFor(final int limit) {
 		final In in = new In("data/shuffled_" + limit + ".txt");
@@ -70,20 +82,22 @@ public class InsertionShuffleTester {
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 
 		final double median = medianOf(executionTimes);
+		final double average = averageOf(executionTimes);
+
 		if (!isWarmup)
-			out.println("Sorted file " + "data/shuffled_" + limit + ".txt" + " \t median= " + median + "\t Reps= "
-					+ repetitions);
+			out.println("Sorted file " + "data/shuffled_" + limit + ".txt" + " \t median= " + median
+					+ "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
+					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions);
+
+		if (repetitions == 1)
+			System.exit(1);
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
-	
-	
 
 		for (int exponent = 0, limit = 2; exponent != 4; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
-
-		
 		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
 			performExperimentsFor(limit, false);
 
@@ -96,5 +110,5 @@ public class InsertionShuffleTester {
 			vals[i] = Double.parseDouble(fields[i]);
 		return vals;
 	}
-	
+
 }

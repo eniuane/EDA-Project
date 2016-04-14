@@ -11,7 +11,7 @@ import pt.europeia.eda.Stopwatch;
 public class InsertionPartiallySortedTester {
 
 	public static final double timeBudgetPerExperiment = 30.0 /* seconds */;
-	
+
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
 
 	public static double medianOf(final ArrayList<Double> values) {
@@ -23,6 +23,18 @@ public class InsertionPartiallySortedTester {
 			return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
 		else
 			return values.get(size / 2);
+	}
+
+	public static double averageOf(final ArrayList<Double> values) {
+		double sum = 0.0;
+
+		if (values.size() == 1)
+			return values.get(0);
+
+		for (int i = 0; i != values.size() - 1; i++)
+			sum += values.get(i);
+
+		return sum / values.size();
 	}
 
 	public static int contiguousRepetitionsFor(final int limit) {
@@ -70,10 +82,15 @@ public class InsertionPartiallySortedTester {
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 
 		final double median = medianOf(executionTimes);
+		final double average = averageOf(executionTimes);
 
 		if (!isWarmup)
 			out.println("Sorted file " + "data/partially_sorted_" + limit + ".txt" + " \t median= " + median
-					+ "\t Reps= " + repetitions);
+					+ "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
+					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions);
+
+		if (repetitions == 1)
+			System.exit(1);
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {

@@ -18,8 +18,6 @@ public class StackPushTester {
 	// the budget.
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
 	
-	public static final double maxTime = 4.0 /* seconds */;
-	
 	// Small execution times are very "noisy", since the System.nanoTime()
 	// method does not have sufficient precision to measure them. In some
 	// systems, smaller execution times may even be measured as 0.0! Hence, in
@@ -140,15 +138,15 @@ public class StackPushTester {
 		}
 	}
 	
-	public static long allSizeOf(final Stack<Integer> stack) {
-		
-		long totalMemory = sizeOf(stack);
-
-		for (Integer item : stack)
-			totalMemory += sizeOf(item);
-
-		return totalMemory;
-	}
+//	public static long allSizeOf(final Stack<Integer> stack) {
+//		
+//		long totalMemory = sizeOf(stack);
+//
+//		for (Integer item : stack)
+//			totalMemory += sizeOf(item);
+//
+//		return totalMemory;
+//	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
 		// The experiments are run for limits of the sums which increase
@@ -156,8 +154,6 @@ public class StackPushTester {
 		
 		// Warm up (this attempts to force the JIT compiler to do its work
 		// before the experiments actually begin):
-		
-		//out.println(sizeOf(new Stack<Integer>()));
 		
 		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
