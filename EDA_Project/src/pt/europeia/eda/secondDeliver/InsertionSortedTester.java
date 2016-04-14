@@ -62,10 +62,8 @@ public class InsertionSortedTester {
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfNumbersToSort.get(i).clone();
-			for (int j = 0; j != limit; j++) {
-				Insertion.sort(numbersToSort);
-			}
+			final Double[] numbersToSort = listOfNumbersToSort.get(i);
+			Insertion.sort(numbersToSort);
 			listOfNumbersToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;

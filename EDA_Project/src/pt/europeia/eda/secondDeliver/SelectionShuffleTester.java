@@ -62,10 +62,8 @@ package pt.europeia.eda.secondDeliver;
 
 			final Stopwatch stopwatch = new Stopwatch();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				final Double[] numbersToSort = listOfNumbersToSort.get(i).clone();
-				for (int j = 0; j != limit; j++) {
+				final Double[] numbersToSort = listOfNumbersToSort.get(i);
 					Selection.sort(numbersToSort);
-				}
 				listOfNumbersToSort.set(i, null);
 			}
 			return stopwatch.elapsedTime() / contiguousRepetitions;
