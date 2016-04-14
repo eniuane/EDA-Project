@@ -11,9 +11,7 @@ import pt.europeia.eda.Stopwatch;
 public class InsertionPartiallySortedTester {
 
 	public static final double timeBudgetPerExperiment = 30.0 /* seconds */;
-
-	public static final double maxTime = 4.0 /* seconds */;
-
+	
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
 
 	public static double medianOf(final ArrayList<Double> values) {

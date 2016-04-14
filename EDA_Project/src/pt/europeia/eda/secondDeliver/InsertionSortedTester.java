@@ -12,10 +12,6 @@ public class InsertionSortedTester {
 
 	public static final double timeBudgetPerExperiment = 30.0 /* seconds */;
 
-	public static final double maxTime = 4.0 /* seconds */;
-
-	public static final String[] filesToSort = { "data/partially_sorted_", "data/shuffled_", "data/sorted_" };
-
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
 
 	public static double medianOf(final ArrayList<Double> values) {
