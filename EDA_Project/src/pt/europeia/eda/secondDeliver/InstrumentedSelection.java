@@ -6,10 +6,10 @@ public class InstrumentedSelection {
 		throw new RuntimeException("Attempt to instantiate package-class");
 	}
 
-	private static int numberOfComparisons = 0;
-	private static int numberOfArrayReads = 0;
-	private static int numberOfArrayWrites = 0;
-	private static int numberOfSwaps = 0;
+	private static long numberOfComparisons = 0;
+	private static long numberOfArrayReads = 0;
+	private static long numberOfArrayWrites = 0;
+	private static long numberOfSwaps = 0;
 
 	public static <Item extends Comparable<? super Item>> void sort(final Item[] values) {
 		for (int numberOfSortedItems = 0; numberOfSortedItems < values.length - 1; numberOfSortedItems++) {
@@ -20,7 +20,7 @@ public class InstrumentedSelection {
 				if (isLess(values[i], values[indexOfMinimum]))
 					indexOfMinimum = i;
 			}
-			
+
 			swap(values, numberOfSortedItems, indexOfMinimum);
 		}
 
@@ -46,6 +46,26 @@ public class InstrumentedSelection {
 			if (isLess(values[i], values[i - 1]))
 				return false;
 		return true;
+	}
+
+	public static long getNumberOfComparisons() {
+		return numberOfComparisons;
+	}
+
+	public static long getNumberOfArrayReads() {
+		return numberOfArrayReads;
+	}
+
+	public static long getNumberOfArrayWrites() {
+		return numberOfArrayWrites;
+	}
+
+	public static long getNumberOfSwaps() {
+		return numberOfSwaps;
+	}
+
+	public static long getNumberOfArrayAccesses() {
+		return numberOfArrayReads + numberOfArrayWrites;
 	}
 
 }

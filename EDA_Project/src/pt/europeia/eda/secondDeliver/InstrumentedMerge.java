@@ -4,9 +4,9 @@ import java.lang.reflect.Array;
 
 public final class InstrumentedMerge {
 
-    private static int numberOfComparisons = 0;
-    private static int numberOfArrayReads = 0;
-    private static int numberOfArrayWrites = 0;
+    private static long numberOfComparisons = 0;
+    private static long numberOfArrayReads = 0;
+    private static long numberOfArrayWrites = 0;
 
     private InstrumentedMerge() {
         throw new RuntimeException("Attempt to instantiate package-class");
@@ -100,19 +100,19 @@ public final class InstrumentedMerge {
         return true;
     }
 
-    public static int getNumberOfComparisons() {
+    public static long getNumberOfComparisons() {
         return numberOfComparisons;
     }
     
-    public static int getNumberOfArrayReads() {
+    public static long getNumberOfArrayReads() {
         return numberOfArrayReads;
     }
     
-    public static int getNumberOfArrayWrites() {
+    public static long getNumberOfArrayWrites() {
         return numberOfArrayWrites;
     }
     
-    public static int getNumberOfArrayAccesses() {
+    public static long getNumberOfArrayAccesses() {
         return numberOfArrayReads + numberOfArrayWrites;
     }
     
