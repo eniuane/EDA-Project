@@ -11,37 +11,39 @@ public class SelectionTester {
 	
 	public static void main(final String[] arguments) {
 
-		int maxReps = 1000;
+		int maxReps = 1;
 		int middle = 0;
 		double estimatedTime = 0;
 		double averageTime = 0;
 		double median = 0;
 		double[] estimatedTimeArray = new double[maxReps];
 		
-		for(int i = 0; i < maxReps; i++)
-		{
-			final In inPartiallySorted = new In(arguments[0]);
+		for(int j = 0; j < arguments.length; j++){
+			for(int i = 0; i < maxReps; i++)
+			{
+				final In inPartiallySorted = new In(arguments[j]);
+				
+				final Double[] partiallySortedNumbersDouble= readAllDoubles(inPartiallySorted);
+				
+				final Stopwatch stopwatch = new Stopwatch();
+				Selection.sort(partiallySortedNumbersDouble);
+				estimatedTime = stopwatch.elapsedTime();
+				
+				averageTime += estimatedTime;
+				estimatedTimeArray[i] = estimatedTime;
+			}
 			
-			final Double[] partiallySortedNumbersDouble= readAllDoubles(inPartiallySorted);
+			Arrays.sort(estimatedTimeArray);
 			
-			final Stopwatch stopwatch = new Stopwatch();
-			Selection.sort(partiallySortedNumbersDouble);
-			estimatedTime = stopwatch.elapsedTime();
+			middle = estimatedTimeArray.length / 2;
 			
-			averageTime += estimatedTime;
-			estimatedTimeArray[i] = estimatedTime;
+			if (estimatedTimeArray.length % 2 == 0)
+				median = (estimatedTimeArray[middle] + estimatedTimeArray[middle - 1]) / 2;
+			else
+				median = estimatedTimeArray[middle];
+			
+			out.println("Sorted the '" + arguments[j] + "' Median = " + median + " Average = " + averageTime / maxReps);
 		}
-		
-		Arrays.sort(estimatedTimeArray);
-		
-		middle = estimatedTimeArray.length / 2;
-		
-		if (estimatedTimeArray.length % 2 == 0)
-			median = (estimatedTimeArray[middle] + estimatedTimeArray[middle - 1]) / 2;
-		else
-			median = estimatedTimeArray[middle];
-		
-		out.println("Sorted the '" + arguments[0] + "' Median = " + median + " Average = " + averageTime / maxReps);
 	}
 	
 	public static Double[] readAllDoubles(In in) {
