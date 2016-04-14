@@ -2,6 +2,7 @@ package pt.europeia.eda.firstDeliver;
 
 import static pt.europeia.eda.Tools.out;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import pt.europeia.eda.Stopwatch;
@@ -35,22 +36,27 @@ public class StackPopTester {
 
 			}
 
-			Arrays.sort(timers);
-			int middle = timers.length / 2;
-			double median = 0;
 
-			if (timers.length % 2 == 0)
-				median = (timers[middle] + timers[middle - 1]) / 2;
-			else
-				median = timers[middle];
+			double median = medianOf(timers);
 
-			double averageOfTimers = 0;
-
-			averageOfTimers = sumOfTimers / maxReps;
+			double averageOfTimers = sumOfTimers / maxReps;
 
 			out.println("Pop " + limit + " times, Mediana = " + median + " Max = " + timers[timers.length - 1]
-					+ " Min = " + timers[0] + " Sum = " + sumOfTimers + " Average = " + averageOfTimers);
+					+ " Min = " + timers[0] +" Sum = " + sumOfTimers + " Average = " + averageOfTimers);
 
 		}
+		
+		
+	}
+	
+	public static double medianOf(final double[] values) {
+		final int middle = values.length / 2;
+
+		Arrays.sort(values);
+
+		if (values.length % 2 == 0)
+			return (values[middle] + values[middle - 1]) / 2;
+		else
+			return values[middle];
 	}
 }
