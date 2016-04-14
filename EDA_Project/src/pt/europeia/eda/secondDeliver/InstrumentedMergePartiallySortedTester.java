@@ -15,7 +15,7 @@ public class InstrumentedMergePartiallySortedTester {
 
 	}
 
-	public static void performExperimentsFor(final int limit, final boolean isWarmup) {
+	public static void performExperimentsFor(final int limit) {
 
 		execute(limit);
 
@@ -28,7 +28,7 @@ public class InstrumentedMergePartiallySortedTester {
 	public static void main(final String[] arguments) throws InterruptedException {
 
 		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
-			performExperimentsFor(limit, false);
+			performExperimentsFor(limit);
 
 	}
 
