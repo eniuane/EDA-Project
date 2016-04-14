@@ -6,11 +6,12 @@ import static pt.europeia.eda.Tools.out;
 import java.util.NoSuchElementException;
 
 public class LinkedStack<Item> {
-    private Node first = null;
+	private Node first = null;
 
     private class Node {
-        private Item item;
-        private Node next;
+    	private Item item;
+    	private Node next;
+       
     }
 
     public boolean isEmpty() {

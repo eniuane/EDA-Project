@@ -1,23 +1,26 @@
-package pt.europeia.eda.firstDeliver;
+package pt.europeia.eda.secondDeliver;
 
 import static java.lang.System.out;
-
-import java.lang.reflect.Array;
-import java.security.AllPermission;
-
-import pt.europeia.eda.Stopwatch;
-
-import java.util.ArrayList;
-
 import static pt.europeia.eda.ObjectSizeFetcher.sizeOf;
 
-public class LStackTester {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import edu.princeton.cs.algs4.In;
+import pt.europeia.eda.Stopwatch;
+import pt.europeia.eda.firstDeliver.Stack;
+
+public class InsertionTester2 {
 	// A time budget is established per experiment. Each experiment is repeated
 	// as many times as necessary to expend this budget. That is, each
 	// experiment is repeated until the total time spent repeating it exceeds
 	// the budget.
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+
+	public static final double maxTime = 4.0 /* seconds */;
 	
+	public static final String[] filesToSort = {"data/partially_sorted_","data/shuffled_","data/sorted_"};
+
 	// Small execution times are very "noisy", since the System.nanoTime()
 	// method does not have sufficient precision to measure them. In some
 	// systems, smaller execution times may even be measured as 0.0! Hence, in
@@ -49,11 +52,19 @@ public class LStackTester {
 
 	// Estimate the number of contiguous repetitions to perform for a given
 	// limit of the numbers to sum in the experiment:
-	public static int contiguousRepetitionsFor(final int limit) {
+	public static int contiguousRepetitionsFor(final int limit, final String[] files) {
+		final ArrayList<Double[]> filesToSort = new ArrayList<Double[]>();
+		for (int i=0 ; i != 3 ; i++)
+		{
+			final In inPartiallySorted = new In(files[i]+limit+".txt");
+			final Double[] partiallySortedNumbersDouble = readAllDoubles(inPartiallySorted);
+			filesToSort.add(partiallySortedNumbersDouble);
+		}
+		
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final LinkedStack<Integer> stackOfInts = new LinkedStack<Integer>();
+			final Double[] FileToSort = partiallySortedNumbersDouble.clone();
 			for (int i = 0; i != limit; i++) {
 				stackOfInts.push(i);
 			}
@@ -74,17 +85,17 @@ public class LStackTester {
 	// to a given limit. The number of contiguous experiments is also passed as
 	// argument.
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
-		final ArrayList<LinkedStack<Integer>> linkedStacks = new ArrayList<LinkedStack<Integer>>();
+		final ArrayList<Double[]> filesToSort = new ArrayList<Double[]>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			linkedStacks.add(new LinkedStack<Integer>());
+			filesToSort.add(new Double[limit]);
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final LinkedStack<Integer> stackOfInts = linkedStacks.get(i);
+			final Stack<Integer> stackOfInts = stacks.get(i);
 			for (int j = 0; j != limit; j++) {
 				stackOfInts.push(j);
 			}
-			linkedStacks.set(i, null);
+			stacks.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
@@ -99,35 +110,26 @@ public class LStackTester {
 	public static void performExperimentsFor(final int limit, final boolean isWarmup) {
 		final ArrayList<Double> executionTimes = new ArrayList<Double>();
 		final Stopwatch stopwatch = new Stopwatch();
-		final int contiguousRepetitions = contiguousRepetitionsFor(limit);
+		final int contiguousRepetitions = contiguousRepetitionsFor(limit,filesToSort);
 		long repetitions = 0;
 		do {
 			executionTimes.add(executionTimeFor(limit, contiguousRepetitions));
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
-		
+
 		final double median = medianOf(executionTimes);
 
-		if (!isWarmup)
-		{
-			final LinkedStack<Integer> stackOfInts = new LinkedStack<Integer>();
-			for (int i = 0; i != limit ; i++)
+		if (!isWarmup) {
+			final Stack<Integer> stackOfInts = new Stack<Integer>();
+			for (int i = 0; i != limit; i++)
 				stackOfInts.push(i);
-			
-			out.println("Made " + limit + " pushes \t Memory =  /*+ allSizeOf(stackOfInts) +*/bytes \t median= " + median + "\t Reps= " + repetitions);
+
+			out.println("Made " + limit + " pushes \t Memory = " + allSizeOf(stackOfInts) + "bytes \t median= " + median
+					+ "\t Reps= " + repetitions);
 		}
 	}
-	
-//	public static long allSizeOf(final LinkedStack<Integer> stack)
-//	{
-//		long totalMemory = sizeOf(stack);
-//		
-//
-//		for (Integer item : stack)
-//			totalMemory += sizeOf(item);
-//		
-//		return totalMemory;
-//	}
+
+
 
 	public static void main(final String[] arguments) throws InterruptedException {
 		// The experiments are run for limits of the sums which increase
@@ -135,33 +137,24 @@ public class LStackTester {
 
 		// Warm up (this attempts to force the JIT compiler to do its work
 		// before the experiments actually begin):
-		
-		//out.println(sizeOf(new Stack<Integer>()));
-		
+
+		// out.println(sizeOf(new Stack<Integer>()));
+
 		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
 		// The actual experiments are performed here, with limits going from 1
 		// to 2^30:
-		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2) 
+		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2)
 			performExperimentsFor(limit, false);
 
 	}
-
+	
+	public static Double[] readAllDoubles(In in) {
+		String[] fields = in.readAllStrings();
+		Double[] vals = new Double[fields.length];
+		for (int i = 0; i < fields.length; i++)
+			vals[i] = Double.parseDouble(fields[i]);
+		return vals;
+	}
 }
-
-/*
- * Copyright 2016, Manuel Menezes de Sequeira.
- * 
- * This code is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This code is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this code. If not, see http://www.gnu.org/licenses.
- */
