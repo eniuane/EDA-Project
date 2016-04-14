@@ -14,6 +14,9 @@ public final class InstrumentedMerge {
 
     public static <Item extends Comparable<? super Item>> void sort(
             final Item[] values) {
+    	numberOfComparisons = 0;
+    	numberOfArrayReads = 0;
+    	numberOfArrayWrites = 0;
         @SuppressWarnings("unchecked")
         final Item[] auxiliary = (Item[]) Array.newInstance(values.getClass()
                 .getComponentType(), values.length);
@@ -26,6 +29,7 @@ public final class InstrumentedMerge {
     private static <Item extends Comparable<? super Item>> void sort(
             final Item[] values, final Item[] auxiliary, final int first,
             final int last) {
+    	resetNumbers();
         if (last <= first)
             return;
 
@@ -80,7 +84,7 @@ public final class InstrumentedMerge {
         assert isIncreasing(values, first, last) : "Merged segment should be increasing.";
     }
 
-    private static <Value extends Comparable<? super Value>> boolean isLess(
+	private static <Value extends Comparable<? super Value>> boolean isLess(
             final Value first, final Value second) {
         numberOfComparisons++;
         return first.compareTo(second) < 0;
@@ -99,6 +103,13 @@ public final class InstrumentedMerge {
 
         return true;
     }
+
+	private static void resetNumbers()
+	{
+		numberOfComparisons = 0;
+		numberOfArrayReads = 0;
+		numberOfArrayWrites = 0;
+	}
 
     public static long getNumberOfComparisons() {
         return numberOfComparisons;

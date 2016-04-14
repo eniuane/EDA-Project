@@ -12,6 +12,7 @@ public class InstrumentedInsertion {
 	}
 
 	public static <Item extends Comparable<? super Item>> void sort(final Item[] values) {
+		resetNumbers();
 		for (int numberOfSortedItems = 1; numberOfSortedItems < values.length; numberOfSortedItems++) {
 			numberOfArrayReads += numberOfSortedItems * 2;
 			for (int i = numberOfSortedItems; i != 0 && isLess(values[i], values[i - 1]); i--)
@@ -40,6 +41,14 @@ public class InstrumentedInsertion {
 				return false;
 		return true;
 	}
+	
+	private static void resetNumbers()
+	{
+		numberOfComparisons = 0;
+		numberOfArrayReads = 0;
+		numberOfArrayWrites = 0;
+		numberOfSwaps = 0;
+	}
 
 	public static long getNumberOfComparisons() {
 		return numberOfComparisons;
@@ -56,7 +65,7 @@ public class InstrumentedInsertion {
 	public static long getNumberOfArrayAccesses() {
 		return numberOfArrayReads + numberOfArrayWrites;
 	}
-	
+
 	public static long getNumberOfSwaps() {
 		return numberOfSwaps;
 	}

@@ -12,6 +12,7 @@ public class InstrumentedSelection {
 	private static long numberOfSwaps = 0;
 
 	public static <Item extends Comparable<? super Item>> void sort(final Item[] values) {
+		resetNumbers();
 		for (int numberOfSortedItems = 0; numberOfSortedItems < values.length - 1; numberOfSortedItems++) {
 			int indexOfMinimum = numberOfSortedItems;
 
@@ -46,6 +47,14 @@ public class InstrumentedSelection {
 			if (isLess(values[i], values[i - 1]))
 				return false;
 		return true;
+	}
+
+	private static void resetNumbers()
+	{
+		numberOfComparisons = 0;
+		numberOfArrayReads = 0;
+		numberOfArrayWrites = 0;
+		numberOfSwaps = 0;
 	}
 
 	public static long getNumberOfComparisons() {
