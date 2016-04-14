@@ -15,33 +15,35 @@ public class InsertionTester {
 		int maxReps = 1;
 		double[] timers = new double[maxReps];
 		double averageOfTimers = 0;
-
-		for (int i = 0; i < maxReps; i++) {
-			final In inPartiallySorted = new In(arguments[0]);
-			final Double[] partiallySortedNumbersDouble = readAllDoubles(inPartiallySorted);
-			
-			final Stopwatch stopwatch = new Stopwatch();
-			Insertion.sort(partiallySortedNumbersDouble);
-			estimatedTime = stopwatch.elapsedTime();
-			
-			averageOfTimers += estimatedTime;
-			out.println(averageOfTimers);
-			timers[i] = estimatedTime;
+		
+			for(int j = 0; j < arguments.length; j++){
+				for (int i = 0; i < maxReps; i++) {
+					final In inFile = new In(arguments[j]);
+					final Double[] fileNumbersDouble = readAllDoubles(inFile);
+					
+					final Stopwatch stopwatch = new Stopwatch();
+					Insertion.sort(fileNumbersDouble);
+					estimatedTime = stopwatch.elapsedTime();
+					
+					averageOfTimers += estimatedTime;
+					//out.println(averageOfTimers);
+					timers[i] = estimatedTime;
+				}
+		
+		
+				Arrays.sort(timers);
+				
+				int middle = timers.length / 2;
+				double median = 0;
+		
+				if (timers.length % 2 == 0)
+					median = (timers[middle] + timers[middle - 1]) / 2;
+				else
+					median = timers[middle];
+				
+				out.println("Sorted the '" + arguments[j] + "' Median = " + median + " Average = " + averageOfTimers / maxReps);
+				
 		}
-		
-		
-		Arrays.sort(timers);
-		
-		int middle = timers.length / 2;
-		double median = 0;
-
-		if (timers.length % 2 == 0)
-			median = (timers[middle] + timers[middle - 1]) / 2;
-		else
-			median = timers[middle];
-		
-		out.println("Sorted the '" + arguments[0] + "' Median = " + median + " Average = " + averageOfTimers / maxReps);
-		
 	}
 
 	public static Double[] readAllDoubles(In in) {
