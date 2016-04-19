@@ -44,7 +44,7 @@ public class MergePartiallySortedTester {
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final Double[] numbersToSort = numbersToSortSorted.clone();
+			final Double[] numbersToSort = Arrays.copyOf(numbersToSortSorted, numbersToSortSorted.length);
 			Merge.sort(numbersToSort);
 			contiguousRepetitions++;
 
@@ -93,10 +93,10 @@ public class MergePartiallySortedTester {
 
 	public static void main(final String[] arguments) throws InterruptedException {
 
-		for (int exponent = 0, limit = 2; exponent != 4; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 2; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
-		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 2; exponent != 24; exponent++, limit *= 2)
 			performExperimentsFor(limit, false);
 
 	}

@@ -10,9 +10,12 @@ import pt.europeia.eda.Stopwatch;
 
 public class InsertionPartiallySortedTester {
 
-	public static final double timeBudgetPerExperiment = 30.0 /* seconds */;
+	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+	public static final double maxTimeForAnExperiment = 30.0;
 
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
+
+	public static final String[] directoryToSort = { "data/partially_sorted_", "data/sorted_", "data/shuffled_" };
 
 	public static double medianOf(final ArrayList<Double> values) {
 		final int size = values.size();
@@ -37,15 +40,16 @@ public class InsertionPartiallySortedTester {
 		return sum / values.size();
 	}
 
-	public static int contiguousRepetitionsFor(final int limit) {
-		final In in = new In("data/partially_sorted_" + limit + ".txt");
-		final Double[] numbersToSortSorted = readAllDoubles(in);
+	public static int contiguousRepetitionsFor(final int limit,final String fileToSort) {
+		final In in = new In(fileToSort + limit + ".txt");
+		final Double[] originalArray = readAllDoubles(in);
+		final Double[] arrayToSort = new Double[originalArray.length];
 
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final Double[] numbersToSort = numbersToSortSorted.clone();
-			Insertion.sort(numbersToSort);
+			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
+			Insertion.sort(arrayToSort);
 			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
@@ -53,8 +57,8 @@ public class InsertionPartiallySortedTester {
 		return contiguousRepetitions;
 	}
 
-	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
-		final In in = new In("data/partially_sorted_" + limit + ".txt");
+	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
+		final In in = new In(fileToSort + limit + ".txt");
 		final Double[] numbersToSortSorted = readAllDoubles(in);
 		final ArrayList<Double[]> listOfNumbersToSort = new ArrayList<Double[]>();
 		for (int i = 0; i != contiguousRepetitions; i++)
@@ -69,35 +73,41 @@ public class InsertionPartiallySortedTester {
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
 
-	public static void performExperimentsFor(final int limit, final boolean isWarmup) {
+	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {
 		final ArrayList<Double> executionTimes = new ArrayList<Double>();
 		final Stopwatch stopwatch = new Stopwatch();
-		final int contiguousRepetitions = contiguousRepetitionsFor(limit);
+		final int contiguousRepetitions = contiguousRepetitionsFor(limit,fileToSort);
 		long repetitions = 0;
 		do {
-			executionTimes.add(executionTimeFor(limit, contiguousRepetitions));
+			executionTimes.add(executionTimeFor(limit, contiguousRepetitions,fileToSort));
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 
 		final double median = medianOf(executionTimes);
 		final double average = averageOf(executionTimes);
 
-		if (!isWarmup)
-			out.println("Sorted file " + "data/partially_sorted_" + limit + ".txt" + " \t median= " + median
+		if (!isWarmup){
+			out.println("Sorted " + limit + " \t median= " + median
 					+ "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
 					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions);
-
-		if (repetitions == 1)
-			System.exit(1);
+		}
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
 
-		for (int exponent = 0, limit = 2; exponent != 4; exponent++, limit *= 2)
-			performExperimentsFor(limit, true);
+		for (int exponent = 0, limit = 2; exponent != 8; exponent++, limit *= 2)
+			performExperimentsFor(limit, true, directoryToSort[0]);
 
-		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
-			performExperimentsFor(limit, false);
+		for (String fileToSort : directoryToSort) {
+			out.println(fileToSort);
+			for (int exponent = 0, limit = 2; exponent != 24; exponent++, limit *= 2) {
+				final Stopwatch stopwatch = new Stopwatch();
+				performExperimentsFor(limit, false, fileToSort);
+				if (stopwatch.elapsedTime() > maxTimeForAnExperiment)
+					break;
+
+			}
+		}
 
 	}
 

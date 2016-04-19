@@ -27,7 +27,7 @@ public class InstrumentedMergeShuffleTester {
 
 	public static void main(final String[] arguments) throws InterruptedException {
 
-		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 2; exponent != 24; exponent++, limit *= 2)
 			performExperimentsFor(limit);
 
 	}

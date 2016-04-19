@@ -24,16 +24,16 @@ public class MergeShuffleTester {
 		else
 			return values.get(size / 2);
 	}
-	
-	public static double averageOf(final ArrayList<Double> values){
+
+	public static double averageOf(final ArrayList<Double> values) {
 		double sum = 0.0;
-		
-		if(values.size() == 1)
+
+		if (values.size() == 1)
 			return values.get(0);
-		
-		for(int i = 0; i != values.size() - 1; i++)
+
+		for (int i = 0; i != values.size() - 1; i++)
 			sum += values.get(i);
-		
+
 		return sum / values.size();
 	}
 
@@ -44,7 +44,7 @@ public class MergeShuffleTester {
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final Double[] numbersToSort = numbersToSortSorted.clone();
+			final Double[] numbersToSort = Arrays.copyOf(numbersToSortSorted, numbersToSortSorted.length);
 			Merge.sort(numbersToSort);
 			contiguousRepetitions++;
 
@@ -62,10 +62,10 @@ public class MergeShuffleTester {
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			
-				final Double[] numbersToSort = listOfNumbersToSort.get(i);
-				Merge.sort(numbersToSort);
-			    listOfNumbersToSort.set(i, null);
+
+			final Double[] numbersToSort = listOfNumbersToSort.get(i);
+			Merge.sort(numbersToSort);
+			listOfNumbersToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
@@ -84,8 +84,8 @@ public class MergeShuffleTester {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup)
-			out.println("Sorted file " + "data/shuffled_" + limit + ".txt" + " \t median= " + median
-					+ "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
+			out.println("Sorted file " + "data/shuffled_" + limit + ".txt" + " \t median= " + median + "\t Average= "
+					+ average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
 					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions);
 
 		if (repetitions == 1)
@@ -94,10 +94,10 @@ public class MergeShuffleTester {
 
 	public static void main(final String[] arguments) throws InterruptedException {
 
-		for (int exponent = 0, limit = 2; exponent != 4; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 2; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
-		for (int exponent = 0, limit = 2; exponent != 31; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 2; exponent != 24; exponent++, limit *= 2)
 			performExperimentsFor(limit, false);
 
 	}

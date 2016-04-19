@@ -14,9 +14,7 @@ public final class InstrumentedMerge {
 
     public static <Item extends Comparable<? super Item>> void sort(
             final Item[] values) {
-    	numberOfComparisons = 0;
-    	numberOfArrayReads = 0;
-    	numberOfArrayWrites = 0;
+    	resetNumbers();
         @SuppressWarnings("unchecked")
         final Item[] auxiliary = (Item[]) Array.newInstance(values.getClass()
                 .getComponentType(), values.length);
@@ -29,7 +27,6 @@ public final class InstrumentedMerge {
     private static <Item extends Comparable<? super Item>> void sort(
             final Item[] values, final Item[] auxiliary, final int first,
             final int last) {
-    	resetNumbers();
         if (last <= first)
             return;
 

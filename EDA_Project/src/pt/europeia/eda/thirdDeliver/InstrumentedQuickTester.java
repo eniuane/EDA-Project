@@ -1,16 +1,17 @@
-package pt.europeia.eda.secondDeliver;
+package pt.europeia.eda.thirdDeliver;
 
 import static java.lang.System.out;
 
 import edu.princeton.cs.algs4.In;
+import pt.europeia.eda.thirdDeliver.InstrumentedQuick;
 
-public class InstrumentedSelectionPartiallySortedTester {
+public class InstrumentedQuickTester {
 
 	public static void execute(final int limit) {
 		final In in = new In("data/partially_sorted_" + limit + ".txt");
 		final Double[] numbersToSortSorted = readAllDoubles(in);
 
-		InstrumentedSelection.sort(numbersToSortSorted);
+		InstrumentedQuick.sort(numbersToSortSorted);
 
 	}
 
@@ -19,11 +20,11 @@ public class InstrumentedSelectionPartiallySortedTester {
 		execute(limit);
 
 		out.println("Sorted file " + "data/partially_sorted_" + limit + ".txt \t Accesses= "
-				+ InstrumentedSelection.getNumberOfArrayAccesses() + "\t Reads= "
-				+ InstrumentedSelection.getNumberOfArrayReads() + "\t Writes= "
-				+ InstrumentedSelection.getNumberOfArrayWrites() + "\t Compares= "
-				+ InstrumentedSelection.getNumberOfComparisons() + "\t Swaps= "
-				+ InstrumentedSelection.getNumberOfSwaps());
+				+ InstrumentedQuick.getNumberOfArrayAccesses() + "\t Reads= "
+				+ InstrumentedQuick.getNumberOfArrayReads() + "\t Writes= "
+				+ InstrumentedQuick.getNumberOfArrayWrites() + "\t Compares= "
+				+ InstrumentedQuick.getNumberOfComparisons() + "\t Swaps= "
+				+ InstrumentedQuick.getNumberOfSwaps());
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
@@ -41,4 +42,3 @@ public class InstrumentedSelectionPartiallySortedTester {
 		return vals;
 	}
 }
-

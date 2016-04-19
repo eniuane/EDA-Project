@@ -1,4 +1,4 @@
-package pt.europeia.eda.secondDeliver;
+package pt.europeia.eda.thirdDeliver;
 
 import static java.lang.System.out;
 
@@ -7,9 +7,9 @@ import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
 import pt.europeia.eda.Stopwatch;
+import pt.europeia.eda.thirdDeliver.Quick;
 
-public class SelectionPartiallySortedTester {
-
+public class QuickTester {
 	public static final double timeBudgetPerExperiment = 30.0 /* seconds */;
 
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
@@ -24,30 +24,30 @@ public class SelectionPartiallySortedTester {
 		else
 			return values.get(size / 2);
 	}
-	
-	public static double averageOf(final ArrayList<Double> values){
+
+	public static double averageOf(final ArrayList<Double> values) {
 		double sum = 0.0;
-		
-		if(values.size() == 1)
+
+		if (values.size() == 1)
 			return values.get(0);
-		
-		for(int i = 0; i != values.size() - 1; i++)
+
+		for (int i = 0; i != values.size() - 1; i++)
 			sum += values.get(i);
-		
+
 		return sum / values.size();
 	}
 
 	public static int contiguousRepetitionsFor(final int limit) {
 		final In in = new In("data/partially_sorted_" + limit + ".txt");
-		final Double[] numbersToSortSorted = readAllDoubles(in);
+		final Double[] originalArray = readAllDoubles(in);
+		final Double[] arrayToSort = new Double[originalArray.length];
 
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final Double[] numbersToSort = numbersToSortSorted.clone();
-			Selection.sort(numbersToSort);
+			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
+			Quick.sort(arrayToSort);
 			contiguousRepetitions++;
-
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
 
 		return contiguousRepetitions;
@@ -58,12 +58,12 @@ public class SelectionPartiallySortedTester {
 		final Double[] numbersToSortSorted = readAllDoubles(in);
 		final ArrayList<Double[]> listOfNumbersToSort = new ArrayList<Double[]>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			listOfNumbersToSort.add(numbersToSortSorted);
+			listOfNumbersToSort.add(Arrays.copyOf(numbersToSortSorted, numbersToSortSorted.length));
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			final Double[] numbersToSort = listOfNumbersToSort.get(i);
-				Selection.sort(numbersToSort);
+			Quick.sort(numbersToSort);
 			listOfNumbersToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
