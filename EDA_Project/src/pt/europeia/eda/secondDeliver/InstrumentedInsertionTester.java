@@ -9,7 +9,7 @@ public class InstrumentedInsertionTester {
 
 	public static final String[] directorysToSort = { "data/partially_sorted_", "data/sorted_", "data/shuffled_" };
 
-	public static final double maxTimeForAnExperiment = 30.0;
+	public static final double maxTimeForAnExperiment = 30.0; /* seconds */
 
 	public static void execute(final int limit, final String filesToTest) {
 		final In in = new In(filesToTest + limit + ".txt");
