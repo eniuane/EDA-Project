@@ -59,11 +59,13 @@ public class InsertionTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final Double[] numbersToSortSorted = readAllDoubles(in);
+		final Double[] originalArray = readAllDoubles(in);
+		final Double[] arrayToSort = new Double[originalArray.length];
 		final ArrayList<Double[]> listOfNumbersToSort = new ArrayList<Double[]>();
-		for (int i = 0; i != contiguousRepetitions; i++)
-			listOfNumbersToSort.add(numbersToSortSorted);
-
+		for (int i = 0; i != contiguousRepetitions; i++){
+			System.arraycopy(originalArray, 0, arrayToSort, 0, arrayToSort.length);
+			listOfNumbersToSort.add(arrayToSort);
+		}
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			final Double[] numbersToSort = listOfNumbersToSort.get(i);
