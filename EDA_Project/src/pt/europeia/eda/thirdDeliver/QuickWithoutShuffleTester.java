@@ -59,16 +59,16 @@ public class QuickWithoutShuffleTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final Double[] numbersToSortSorted = readAllDoubles(in);
-		final ArrayList<Double[]> listOfNumbersToSort = new ArrayList<Double[]>();
+		final Double[] originalArray = readAllDoubles(in);
+		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			listOfNumbersToSort.add(numbersToSortSorted);
+			listOfArraysToSort.add(originalArray.clone());
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfNumbersToSort.get(i);
+			final Double[] numbersToSort = listOfArraysToSort.get(i);
 			QuickWithoutShuffle.sort(numbersToSort);
-			listOfNumbersToSort.set(i, null);
+			listOfArraysToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}

@@ -61,15 +61,15 @@ public class InsertionTester {
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
 		final Double[] originalArray = readAllDoubles(in);
-		final ArrayList<Double[]> listOfNumbersToSort = new ArrayList<Double[]>();
+		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
 		for (int i = 0; i != contiguousRepetitions; i++){
-			listOfNumbersToSort.add(originalArray.clone());
+			listOfArraysToSort.add(originalArray.clone());
 		}
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfNumbersToSort.get(i);
+			final Double[] numbersToSort = listOfArraysToSort.get(i);
 			Insertion.sort(numbersToSort);
-			listOfNumbersToSort.set(i, null);
+			listOfArraysToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
