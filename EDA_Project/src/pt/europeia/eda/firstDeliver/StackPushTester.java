@@ -90,7 +90,7 @@ public class StackPushTester {
 		if (!isWarmup)
 			out.println("Made " + limit + " pushes \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions);
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
