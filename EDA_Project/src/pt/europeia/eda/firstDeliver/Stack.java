@@ -37,9 +37,9 @@ public class Stack<Item> implements Iterable<Item> {
 	public Item pop() {
 		if (isEmpty())
 			throw new NoSuchElementException("Stack underflow.");
-		
+
 		size--;
-		
+
 		final Item item = items[size];
 
 		items[size] = null;
@@ -101,7 +101,6 @@ public class Stack<Item> implements Iterable<Item> {
 	public int getSize() {
 		return size;
 	}
-
 }
 
 /*
