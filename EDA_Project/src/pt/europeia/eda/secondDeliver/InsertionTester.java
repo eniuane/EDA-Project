@@ -90,7 +90,7 @@ public class InsertionTester {
 		if (!isWarmup) {
 			out.println("Sorted " + limit + " \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions);
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 		}
 	}
 
