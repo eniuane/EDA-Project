@@ -60,6 +60,7 @@ public class test {
 	}
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
+
 		final ArrayList<Stack<Integer>> stacks = new ArrayList<Stack<Integer>>();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			stacks.add(new Stack<Integer>());
@@ -102,7 +103,6 @@ public class test {
 		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
-		
 		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2) {
 			final Stopwatch stopwatch = new Stopwatch();
 			performExperimentsFor(limit, false);
