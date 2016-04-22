@@ -1,4 +1,4 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;

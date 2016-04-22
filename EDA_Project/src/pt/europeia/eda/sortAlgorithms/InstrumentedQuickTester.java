@@ -1,9 +1,9 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
 import static java.lang.System.out;
 
 import edu.princeton.cs.algs4.In;
-import pt.europeia.eda.thirdDeliver.InstrumentedQuick;
+import pt.europeia.eda.sortAlgorithms.InstrumentedQuick;
 
 public class InstrumentedQuickTester {
 

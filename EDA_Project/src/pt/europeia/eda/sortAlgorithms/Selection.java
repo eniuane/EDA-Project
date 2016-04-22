@@ -1,4 +1,4 @@
-package pt.europeia.eda.secondDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
 public final class Selection {
 

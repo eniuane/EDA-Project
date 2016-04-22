@@ -1,21 +1,21 @@
-package pt.europeia.eda.secondDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
 import static java.lang.System.out;
 
 import edu.princeton.cs.algs4.In;
 import pt.europeia.eda.Stopwatch;
 
-public class InstrumentedSelectionTester {
+public class InstrumentedInsertionTester {
 
 	public static final String[] directorysToSort = { "data/partially_sorted_", "data/sorted_", "data/shuffled_" };
 
-	public static final double maxTimeForAnExperiment = 30.0;
+	public static final double maxTimeForAnExperiment = 30.0; /* seconds */
 
 	public static void execute(final int limit, final String filesToTest) {
 		final In in = new In(filesToTest + limit + ".txt");
 		final Double[] numbersToSortSorted = readAllDoubles(in);
 
-		InstrumentedSelection.sort(numbersToSortSorted);
+		InstrumentedInsertion.sort(numbersToSortSorted);
 
 	}
 
@@ -23,11 +23,11 @@ public class InstrumentedSelectionTester {
 
 		execute(limit, filesToTest);
 
-		out.println("Sorted " + limit + "\t Accesses= " + InstrumentedSelection.getNumberOfArrayAccesses()
-				+ "\t Reads= " + InstrumentedSelection.getNumberOfArrayReads() + "\t Writes= "
-				+ InstrumentedSelection.getNumberOfArrayWrites() + "\t Compares= "
-				+ InstrumentedSelection.getNumberOfComparisons() + "\t Swaps= "
-				+ InstrumentedSelection.getNumberOfSwaps());
+		out.println("Sorted " + limit + "\t Accesses= " + InstrumentedInsertion.getNumberOfArrayAccesses()
+				+ "\t Reads= " + InstrumentedInsertion.getNumberOfArrayReads() + "\t Writes= "
+				+ InstrumentedInsertion.getNumberOfArrayWrites() + "\t Compares= "
+				+ InstrumentedInsertion.getNumberOfComparisons() + "\t Swaps= "
+				+ InstrumentedInsertion.getNumberOfSwaps());
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {

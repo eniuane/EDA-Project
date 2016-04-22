@@ -1,4 +1,4 @@
-package pt.europeia.eda.firstDeliver;
+package pt.europeia.eda.stacks;
 
 import static java.lang.System.out;
 
@@ -9,7 +9,7 @@ import pt.europeia.eda.Stopwatch;
 
 import java.util.ArrayList;
 
-public class StackPopTester {
+public class LinkedStackPopTester {
 
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
 
@@ -42,22 +42,21 @@ public class StackPopTester {
 
 	public static int contiguousRepetitionsFor(final int limit) {
 		int contiguousRepetitions = 1;
-		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2)
-		{
-			final ArrayList<Stack<Integer>> stacks = new ArrayList<Stack<Integer>>();
+		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
+			final ArrayList<LinkedStack<Integer>> linkedStacks = new ArrayList<LinkedStack<Integer>>();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				stacks.add(new Stack<Integer>());
+				linkedStacks.add(new LinkedStack<Integer>());
 				for (int j = 0; j != limit; j++)
-					stacks.get(i).push(j);
+					linkedStacks.get(i).push(j);
 			}
 
 			final Stopwatch stopwatch = new Stopwatch();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				final Stack<Integer> stackOfInts = stacks.get(i);
+				final LinkedStack<Integer> linkedStack = linkedStacks.get(i);
 				for (int j = 0; j != limit; j++) {
-					stackOfInts.pop();
+					linkedStack.pop();
 				}
-				stacks.set(i, null);
+				linkedStacks.set(i, null);
 			}
 			if (stopwatch.elapsedTime() >= minimumTimePerContiguousRepetitions)
 				break;
@@ -68,20 +67,20 @@ public class StackPopTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
 
-		final ArrayList<Stack<Integer>> stacks = new ArrayList<Stack<Integer>>();
+		final ArrayList<LinkedStack<Integer>> linkedStacks = new ArrayList<LinkedStack<Integer>>();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			stacks.add(new Stack<Integer>());
+			linkedStacks.add(new LinkedStack<Integer>());
 			for (int j = 0; j != limit; j++)
-				stacks.get(i).push(j);
+				linkedStacks.get(i).push(j);
 		}
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Stack<Integer> stackOfInts = stacks.get(i);
+			final LinkedStack<Integer> linkedStack = linkedStacks.get(i);
 			for (int j = 0; j != limit; j++) {
-				stackOfInts.pop();
+				linkedStack.pop();
 			}
-			stacks.set(i, null);
+			linkedStacks.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}

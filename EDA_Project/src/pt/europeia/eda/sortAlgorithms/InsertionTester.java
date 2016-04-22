@@ -1,4 +1,4 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
 import static java.lang.System.out;
 
@@ -8,9 +8,10 @@ import java.util.Arrays;
 import edu.princeton.cs.algs4.In;
 import pt.europeia.eda.Stopwatch;
 
-public class QuickWithoutShuffleTester {
+public class InsertionTester {
 
-	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
+	
 	public static final double maxTimeForAnExperiment = 30.0;
 
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
@@ -49,7 +50,7 @@ public class QuickWithoutShuffleTester {
 		int contiguousRepetitions = 0;
 		do {
 			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
-			QuickWithoutShuffle.sort(arrayToSort);
+			Insertion.sort(arrayToSort);
 			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
@@ -61,13 +62,13 @@ public class QuickWithoutShuffleTester {
 		final In in = new In(fileToSort + limit + ".txt");
 		final Double[] originalArray = readAllDoubles(in);
 		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
-		for (int i = 0; i != contiguousRepetitions; i++)
+		for (int i = 0; i != contiguousRepetitions; i++){
 			listOfArraysToSort.add(originalArray.clone());
-
+		}
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			final Double[] numbersToSort = listOfArraysToSort.get(i);
-			QuickWithoutShuffle.sort(numbersToSort);
+			Insertion.sort(numbersToSort);
 			listOfArraysToSort.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
@@ -89,7 +90,7 @@ public class QuickWithoutShuffleTester {
 		if (!isWarmup) {
 			out.println("Sorted " + limit + " \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions);
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 		}
 	}
 

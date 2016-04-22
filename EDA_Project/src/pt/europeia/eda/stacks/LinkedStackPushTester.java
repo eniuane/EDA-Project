@@ -1,14 +1,20 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.stacks;
 
 import static java.lang.System.out;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.lang.reflect.Array;
 
-import edu.princeton.cs.algs4.In;
+import java.security.AllPermission;
+
 import pt.europeia.eda.Stopwatch;
 
-public class QuickTester {
+import java.util.ArrayList;
+
+import edu.princeton.cs.algs4.Average;
+
+import static pt.europeia.eda.ObjectSizeFetcher.sizeOf;
+
+public class LinkedStackPushTester {
 
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
 
@@ -40,15 +46,13 @@ public class QuickTester {
 	}
 
 	public static int contiguousRepetitionsFor(final int limit) {
-		final In in = new In("data/partially_sorted_" + limit + ".txt");
-		final Double[] originalArray = readAllDoubles(in);
-		final Double[] arrayToSort = new Double[originalArray.length];
-
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
-			Quick.sort(arrayToSort);
+			final LinkedStack<Integer> stackOfInts = new LinkedStack<Integer>();
+			for (int i = 0; i != limit; i++) {
+				stackOfInts.push(i);
+			}
 			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
@@ -57,17 +61,17 @@ public class QuickTester {
 	}
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions) {
-		final In in = new In("data/partially_sorted_" + limit + ".txt");
-		final Double[] originalArray = readAllDoubles(in);
-		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
+		final ArrayList<LinkedStack<Integer>> linkedStacks = new ArrayList<LinkedStack<Integer>>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			listOfArraysToSort.add(originalArray.clone());
+			linkedStacks.add(new LinkedStack<Integer>());
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfArraysToSort.get(i);
-			Quick.sort(numbersToSort);
-			listOfArraysToSort.set(i, null);
+			final LinkedStack<Integer> stackOfInts = linkedStacks.get(i);
+			for (int j = 0; j != limit; j++) {
+				stackOfInts.push(j);
+			}
+			linkedStacks.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
@@ -85,32 +89,40 @@ public class QuickTester {
 		final double median = medianOf(executionTimes);
 		final double average = averageOf(executionTimes);
 
-		if (!isWarmup) {
-			out.println("Sorted " + limit + " \t median= " + median + "\t Average= " + average + "\t Minimum= "
+		if (!isWarmup)
+			out.println("Made " + limit + " pushes \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions);
-		}
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 	}
 
 	public static void main(final String[] arguments) throws InterruptedException {
 
-		for (int exponent = 0, limit = 2; exponent != 8; exponent++, limit *= 2)
+		for (int exponent = 0, limit = 1; exponent != 8; exponent++, limit *= 2)
 			performExperimentsFor(limit, true);
 
-		for (int exponent = 0, limit = 2; exponent != 24; exponent++, limit *= 2) {
+		for (int exponent = 0, limit = 1; exponent != 31; exponent++, limit *= 2) {
 			final Stopwatch stopwatch = new Stopwatch();
 			performExperimentsFor(limit, false);
 			if (stopwatch.elapsedTime() > maxTimeForAnExperiment)
 				break;
-
 		}
+
 	}
 
-	public static Double[] readAllDoubles(In in) {
-		String[] fields = in.readAllStrings();
-		Double[] vals = new Double[fields.length];
-		for (int i = 0; i < fields.length; i++)
-			vals[i] = Double.parseDouble(fields[i]);
-		return vals;
-	}
 }
+
+/*
+ * Copyright 2016, Manuel Menezes de Sequeira.
+ * 
+ * This code is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This code is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this code. If not, see http://www.gnu.org/licenses.
+ */

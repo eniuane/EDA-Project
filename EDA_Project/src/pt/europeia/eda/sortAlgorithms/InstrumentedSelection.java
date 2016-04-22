@@ -1,23 +1,30 @@
-package pt.europeia.eda.secondDeliver;
+package pt.europeia.eda.sortAlgorithms;
 
-public class InstrumentedInsertion {
+public class InstrumentedSelection {
+
+	private InstrumentedSelection() {
+		throw new RuntimeException("Attempt to instantiate package-class");
+	}
 
 	private static long numberOfComparisons = 0;
 	private static long numberOfArrayReads = 0;
 	private static long numberOfArrayWrites = 0;
 	private static long numberOfSwaps = 0;
 
-	private InstrumentedInsertion() {
-		throw new RuntimeException("Attempt to instantiate package-class");
-	}
-
 	public static <Item extends Comparable<? super Item>> void sort(final Item[] values) {
 		resetNumbers();
-		for (int numberOfSortedItems = 1; numberOfSortedItems < values.length; numberOfSortedItems++) {
-			numberOfArrayReads += numberOfSortedItems * 2;
-			for (int i = numberOfSortedItems; i != 0 && isLess(values[i], values[i - 1]); i--)
-				swap(values, i - 1, i);
+		for (int numberOfSortedItems = 0; numberOfSortedItems < values.length - 1; numberOfSortedItems++) {
+			int indexOfMinimum = numberOfSortedItems;
+
+			for (int i = indexOfMinimum + 1; i != values.length; i++) {
+				numberOfArrayReads += 2;
+				if (isLess(values[i], values[indexOfMinimum]))
+					indexOfMinimum = i;
+			}
+
+			swap(values, numberOfSortedItems, indexOfMinimum);
 		}
+
 		assert isIncreasing(values) : "Array should be increasing after sorting.";
 	}
 
@@ -41,7 +48,7 @@ public class InstrumentedInsertion {
 				return false;
 		return true;
 	}
-	
+
 	private static void resetNumbers()
 	{
 		numberOfComparisons = 0;
@@ -62,11 +69,12 @@ public class InstrumentedInsertion {
 		return numberOfArrayWrites;
 	}
 
+	public static long getNumberOfSwaps() {
+		return numberOfSwaps;
+	}
+
 	public static long getNumberOfArrayAccesses() {
 		return numberOfArrayReads + numberOfArrayWrites;
 	}
 
-	public static long getNumberOfSwaps() {
-		return numberOfSwaps;
-	}
 }
