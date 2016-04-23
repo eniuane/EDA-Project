@@ -10,7 +10,7 @@ import pt.europeia.eda.Stopwatch;
 public class Table {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
-	
+
 	public static final double maxTimeForAnExperiment = 30.0;
 
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;
@@ -42,19 +42,15 @@ public class Table {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
 
-        assert table.size() == 0;
-        assert table.isEmpty();
-        
-		final Double[] originalArray = readAllDoubles(in);
-		final Double[] arrayToPutIn = new Double[originalArray.length];
+		final Double[] keys = readAllDoubles(in);
 
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			for(int i = 0; i < limit; i++)
-				table.put(arrayToPutIn[i], arrayToPutIn[i]);
+			final SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
+			for (int i = 0; i < limit; i++)
+				table.put(keys[i], keys[i]);
 			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
@@ -64,22 +60,20 @@ public class Table {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
 
-        assert table.size() == 0;
-        assert table.isEmpty();
-        
 		final Double[] originalArray = readAllDoubles(in);
-		final ArrayList<Double[]> listOfArraysToPutIn = new ArrayList<Double[]>();
-		for (int i = 0; i != contiguousRepetitions; i++){
-			listOfArraysToPutIn.add(originalArray.clone());
+		final ArrayList<SequentialSearchTable<Double, Double>> listOftables = new ArrayList<SequentialSearchTable<Double, Double>>();
+		for (int i = 0; i != contiguousRepetitions; i++) {
+			listOftables.add(new SequentialSearchTable<Double, Double>());
 		}
-		
+
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfArraysToPutIn.get(i);
-			table.put(numbersToSort[i], numbersToSort[i]);
-			listOfArraysToPutIn.set(i, null);
+			final SequentialSearchTable<Double, Double> table = listOftables.get(i);
+			for (int j = 0; j != limit; j++)
+				table.put(originalArray[j], originalArray[j]);
+
+			listOftables.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
