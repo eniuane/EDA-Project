@@ -1,4 +1,4 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.tables;
 
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdIn;

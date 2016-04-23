@@ -1,9 +1,10 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.tables;
 
-public class TableTester {
+public class OrderedTableTester {
 
     public static void main(final String[] arguments) {
-        final SequentialSearchTable<String, Integer> table = new SequentialSearchTable<String, Integer>();
+        //final BinarySearchOrderedTable<String, Integer> table = new BinarySearchOrderedTable<String, Integer>();
+        final SequentialSearchOrderedTable<String, Integer> table = new SequentialSearchOrderedTable<String, Integer>();
 
         assert table.size() == 0;
         assert table.isEmpty();
@@ -22,17 +23,51 @@ public class TableTester {
         table.put("Ten", 10);
         table.delete("Zero");
         table.put("One", null);
-
-        int position = 10;
+        
+        int[] values = {8, 5, 4, 9, 7, 6, 10, 3, 2};
+        int i = 0;
         for (String key : table.keys()) {
-            assert table.valueFor(key) == position;
-            position--;
+            assert table.valueFor(key).intValue() == values[i];
+            assert table.rankOf(key) == i;
+            assert table.keyWithRank(i).equals(key);
+            i++;
         }
 
         assert table.contains("Ten");
         assert !table.contains("Zero");
         assert table.size() == 9;
         assert !table.isEmpty();
+        
+        assert table.minimum().equals("Eight");
+        assert table.maximum().equals("Two");
+        
+        table.deleteMinimum();
+        table.deleteMaximum();
+        
+        assert table.minimum().equals("Five");
+        assert table.maximum().equals("Three");
+        
+        assert table.sizeOfRange("Nine", "Six") == 3;
+        assert table.sizeOfRange("Geek", "Tangram") == 3;
+        
+        assert table.floorOf("Fanfarre") == null;
+        assert table.floorOf("Five").equals("Five");
+        assert table.floorOf("Geek").equals("Four");
+        assert table.floorOf("Uber").equals("Three");
+        
+        assert table.ceilingOf("Fanfarre").equals("Five");
+        assert table.ceilingOf("Five").equals("Five");
+        assert table.ceilingOf("Geek").equals("Nine");
+        assert table.ceilingOf("Uber") == null;
+        
+        values = new int[] {9, 7, 6, 10, 3};
+        i = 0;
+        for (String key : table.keysInRange("Geek", "Uber")) {
+            assert table.valueFor(key).intValue() == values[i];
+            assert table.rankOf(key) == i + 2;
+            assert table.keyWithRank(i + 2).equals(key);
+            i++;
+        }
 
         table.delete("One");
         table.delete("Ten");

@@ -1,4 +1,4 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.tables;
 
 import static java.lang.System.out;
 

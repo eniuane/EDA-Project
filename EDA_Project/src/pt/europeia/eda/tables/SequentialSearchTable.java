@@ -1,18 +1,15 @@
-package pt.europeia.eda.thirdDeliver;
+package pt.europeia.eda.tables;
 
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import pt.europeia.eda.sortAlgorithms.Quick;
 
-import java.util.NoSuchElementException;
-
-public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, Value> {
+public class SequentialSearchTable<Key, Value> {
 
     private int size;
     private Node<Key, Value> first;
 
-    private static class Node<Key extends Comparable<? super Key>, Value> {
+    private static class Node<Key, Value> {
 
         private final Key key;
         private Value value;
@@ -27,7 +24,7 @@ public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, V
 
     }
 
-    public SequentialSearchOrderedTable() {
+    public SequentialSearchTable() {
         size = 0;
         first = null;
 
@@ -65,7 +62,12 @@ public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, V
     public Iterable<Key> keys() {
         checkInvariant();
 
-        return keysInRange(minimum(), maximum());
+        final Queue<Key> queue = new Queue<Key>();
+
+        for (Node<Key, Value> node = first; node != null; node = node.next)
+            queue.enqueue(node.key);
+
+        return queue;
     }
 
     public void put(final Key key, final Value value) {
@@ -120,139 +122,6 @@ public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, V
     // checkInvariant();
     // }
     //
-    public int rankOf(final Key key) {
-        int rank = 0;
-        for (Node<Key, Value> node = first; node != null; node = node.next)
-            if (node.key.compareTo(key) < 0)
-                rank++;
-
-        return rank;
-    }
-
-    public Key minimum() {
-        checkInvariant();
-
-        if (isEmpty())
-            return null;
-
-        Key minimumKey = first.key;
-
-        for (Node<Key, Value> node = first.next; node != null; node = node.next)
-            if (node.key.compareTo(minimumKey) < 0)
-                minimumKey = node.key;
-
-        return minimumKey;
-    }
-
-    public Key maximum() {
-        checkInvariant();
-
-        if (isEmpty())
-            return null;
-
-        Key maximumKey = first.key;
-
-        for (Node<Key, Value> node = first.next; node != null; node = node.next)
-            if (node.key.compareTo(maximumKey) > 0)
-                maximumKey = node.key;
-
-        return maximumKey;
-    }
-
-    public Key keyWithRank(final int rank) {
-        if (rank < 0 || rank >= size)
-            return null;
-
-        return Quick.select(keysArray(), rank);
-    }
-
-    public Key floorOf(final Key key) {
-        checkInvariant();
-
-        Key floor = null;
-
-        for (Node<Key, Value> node = first; node != null; node = node.next)
-            if (node.key.compareTo(key) <= 0
-                    && (floor == null || node.key.compareTo(floor) > 0))
-                floor = node.key;
-
-        return floor;
-    }
-
-    public Key ceilingOf(final Key key) {
-        checkInvariant();
-
-        Key ceiling = null;
-
-        for (Node<Key, Value> node = first; node != null; node = node.next)
-            if (node.key.compareTo(key) >= 0
-                    && (ceiling == null || node.key.compareTo(ceiling) < 0))
-                ceiling = node.key;
-
-        return ceiling;
-    }
-
-    public int sizeOfRange(final Key low, final Key high) {
-        checkInvariant();
-
-        int sizeOfRange = 0;
-
-        for (Node<Key, Value> node = first; node != null; node = node.next)
-            if (node.key.compareTo(low) >= 0 && node.key.compareTo(high) <= 0)
-                sizeOfRange++;
-
-        return sizeOfRange;
-    }
-
-    public Iterable<Key> keysInRange(final Key low, final Key high) {
-        checkInvariant();
-
-        final Queue<Key> queue = new Queue<Key>();
-
-        if (low == null && high == null)
-            return queue;
-
-        if (low == null)
-            throw new IllegalArgumentException(
-                    "Low and high keys must either both be null or both non-null");
-        if (high == null)
-            throw new IllegalArgumentException(
-                    "Low and high keys must either both be null or both non-null");
-
-        final Key[] keys = keysArray();
-
-        Quick.sort(keys);
-
-        for (Key key : keys)
-            if (key.compareTo(low) >= 0 && key.compareTo(high) <= 0)
-                queue.enqueue(key);
-
-        return queue;
-    }
-
-    public void deleteMinimum() {
-        checkInvariant();
-
-        if (isEmpty())
-            throw new NoSuchElementException(
-                    "Cannot delete minimum key-value from empty table");
-
-        delete(minimum());
-
-        checkInvariant();
-    }
-
-    public void deleteMaximum() {
-        checkInvariant();
-
-        if (isEmpty())
-            throw new NoSuchElementException("Symbol table underflow error");
-
-        delete(maximum());
-
-        checkInvariant();
-    }
-
     // private Node<Key, Value> deleteFrom(final Node<Key, Value> node, final
     // Key key) {
     // if (node == null)
@@ -267,25 +136,11 @@ public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, V
     //
     // return node;
     // }
-
-    private Key[] keysArray() {
-        @SuppressWarnings("unchecked")
-        final Key[] keys = (Key[]) new Comparable[size];
-
-        int i = 0;
-        for (Node<Key, Value> node = first; node != null; node = node.next) {
-            keys[i] = node.key;
-            i++;
-        }
-
-        return keys;
-    }
-
+    //
     private void checkInvariant() {
         assert isSizeConsistent() : "Table array capacities not consistent with size.";
         assert keysAreNonNull() : "Table contains null keys.";
         assert valuesAreNonNull() : "Table contains null values.";
-        assert isRankConsistent() : "Ranks of table are not consistent.";
     }
 
     private boolean isSizeConsistent() {
@@ -310,20 +165,9 @@ public class SequentialSearchOrderedTable<Key extends Comparable<? super Key>, V
         return true;
     }
 
-    private boolean isRankConsistent() {
-        for (int i = 0; i != size; i++)
-            if (i != rankOf(keyWithRank(i)))
-                return false;
-
-        for (Node<Key, Value> node = first; node != null; node = node.next)
-            if (node.key.compareTo(keyWithRank(rankOf(node.key))) != 0)
-                return false;
-
-        return true;
-    }
-
+    // Test input: S E A R C H E X A M P L E
     public static void main(final String[] arguments) {
-        final SequentialSearchOrderedTable<String, Integer> table = new SequentialSearchOrderedTable<String, Integer>();
+        final SequentialSearchTable<String, Integer> table = new SequentialSearchTable<String, Integer>();
 
         for (int i = 0; !StdIn.isEmpty(); i++) {
             final String word = StdIn.readString();
