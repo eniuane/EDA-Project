@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
-import pt.europeia.eda.stacks.Stack;
 
-public class test {
+public class test2 {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 
@@ -50,7 +49,7 @@ public class test {
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			final SequentialSearchTable<Double,Double> table = new SequentialSearchTable<Double,Double>();
+			final BinarySearchOrderedTable<Double,Double> table = new BinarySearchOrderedTable<Double,Double>();
 			for (int i = 0; i != limit; i++)
 				table.put(keys[i],keys[i]);
 
@@ -65,13 +64,13 @@ public class test {
 		final In in = new In(fileToSort + limit + ".txt");
 
 		final Double[] keys = readAllDoubles(in);
-		final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
+		final ArrayList<BinarySearchOrderedTable<Double, Double>> tables = new ArrayList<BinarySearchOrderedTable<Double, Double>>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			tables.add(new SequentialSearchTable<Double, Double>());
+			tables.add(new BinarySearchOrderedTable<Double, Double>());
 		
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final SequentialSearchTable<Double, Double> table = tables.get(i);
+			final BinarySearchOrderedTable<Double, Double> table = tables.get(i);
 			for (int j = 0; j != limit; j++)
 				table.put(keys[j], keys[j]);
 			tables.set(i, null);
