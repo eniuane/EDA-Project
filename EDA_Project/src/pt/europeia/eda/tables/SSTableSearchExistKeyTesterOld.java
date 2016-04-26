@@ -5,9 +5,10 @@ import static java.lang.System.out;
 import java.util.ArrayList;
 
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
 
-public class deleteTest {
+public class SSTableSearchExistKeyTesterOld {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 
@@ -42,73 +43,53 @@ public class deleteTest {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
-		
 		int contiguousRepetitions = 1;
-		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2)
-		{
+
+		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
 			final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
 			for (int i = 0; i != contiguousRepetitions; i++) {
 				tables.add(new SequentialSearchTable<Double, Double>());
 				for (int j = 0; j != limit; j++)
-					tables.get(i).put(keys[j], keys[j]);
+					tables.get(i).put(keys[j], trashValue);
 			}
+
+			StdRandom.shuffle(keys);
 
 			final Stopwatch stopwatch = new Stopwatch();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				final SequentialSearchTable<Double,Double> table = tables.get(i);
-				for (int j = 0; j != limit; j++) {
-					table.delete(keys[j]);
-				}
+				final SequentialSearchTable<Double, Double> table = tables.get(i);
+				table.valueFor(keys[0]);
 				tables.set(i, null);
 			}
 			if (stopwatch.elapsedTime() >= minimumTimePerContiguousRepetitions)
 				break;
 		}
-
-		/*final Stopwatch stopwatch = new Stopwatch();
-		int contiguousRepetitions = 0;
-		do {
-			final SequentialSearchTable<Double,Double> table = new SequentialSearchTable<Double,Double>();
-			for (int i = 0; i != limit; i++)
-				table.put(keys[i],keys[i]);
-			
-			for (int i = 0; i != limit; i++)
-				table.delete(keys[i]);;
-
-			contiguousRepetitions++;
-
-		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);*/
-
 		return contiguousRepetitions;
 	}
 
-	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
+	public static ArrayList<Double> executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
-		
-		final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
-		for (int i = 0; i != contiguousRepetitions; i++) {
-			tables.add(new SequentialSearchTable<Double, Double>());
+		SequentialSearchTable<Double, Double> tableOfDoubles = new SequentialSearchTable<>();
 			for (int j = 0; j != limit; j++)
-				tables.get(i).put(keys[j], keys[j]);
-		}
+				tableOfDoubles.put(keys[j], trashValue);
 
+		StdRandom.shuffle(keys);
+		final ArrayList<Double> times = new ArrayList<Double>();
 		final Stopwatch stopwatch = new Stopwatch();
-		for (int i = 0; i != contiguousRepetitions; i++) {
-			final SequentialSearchTable<Double,Double> table = tables.get(i);
-			for (int j = 0; j != limit; j++) {
-				table.delete(keys[j]);
-			}
-			tables.set(i, null);
+		for (int j = 0; j != limit; j++) {
+			for (int i = 0; i != contiguousRepetitions; i++)
+				tableOfDoubles.valueFor(keys[j]);
+			times.add(stopwatch.elapsedTime() / contiguousRepetitions);
 		}
-		return stopwatch.elapsedTime() / contiguousRepetitions;
+		return times;
 	}
 
 	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {
-		final ArrayList<Double> executionTimes = new ArrayList<Double>();
+		final ArrayList<ArrayList<Double>> executionTimes = new ArrayList<ArrayList<Double>>();
 		final Stopwatch stopwatch = new Stopwatch();
 		final int contiguousRepetitions = contiguousRepetitionsFor(limit, fileToSort);
 		long repetitions = 0;
@@ -117,14 +98,22 @@ public class deleteTest {
 			repetitions++;
 		} while (stopwatch.elapsedTime() < timeBudgetPerExperiment);
 
-		final double median = medianOf(executionTimes);
-		final double average = averageOf(executionTimes);
+		final ArrayList<Double> medians = new ArrayList<Double>();
+		for (ArrayList<Double> list : executionTimes)
+			medians.add(medianOf(list));
+		final double median = medianOf(medians);
+		
+		final ArrayList<Double> averages = new ArrayList<Double>();
+		for (ArrayList<Double> list : executionTimes)
+			averages.add(medianOf(list));
+		final double average = averageOf(averages);
 
 		if (!isWarmup) {
-			out.println("Deleted " + limit + " values \t median= " + median + "\t Average= "
-					+ average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
+			out.println("Searched for one value in a table with " + limit + " values \t median= " + median + "\t Average= " + average + " \t Reps= " + repetitions);
+			/*out.println("Searched for one value in a table with " + limit + " values \t median= " + median
+					+ "\t Average= " + average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
 					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions + "\t ContiguousReps= "
-					+ contiguousRepetitions);
+					+ contiguousRepetitions);*/
 		}
 	}
 

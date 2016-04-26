@@ -19,11 +19,9 @@ public class InstrumentedQuickTester {
 
 		execute(limit);
 
-		out.println("Sorted file " + "data/partially_sorted_" + limit + ".txt \t Accesses= "
-				+ InstrumentedQuick.getNumberOfArrayAccesses() + "\t Reads= "
-				+ InstrumentedQuick.getNumberOfArrayReads() + "\t Writes= "
-				+ InstrumentedQuick.getNumberOfArrayWrites() + "\t Compares= "
-				+ InstrumentedQuick.getNumberOfComparisons() + "\t Swaps= "
+		out.println("Sorted " + limit + " \t Accesses= " + InstrumentedQuick.getNumberOfArrayAccesses() + "\t Reads= "
+				+ InstrumentedQuick.getNumberOfArrayReads() + "\t Writes= " + InstrumentedQuick.getNumberOfArrayWrites()
+				+ "\t Compares= " + InstrumentedQuick.getNumberOfComparisons() + "\t Swaps= "
 				+ InstrumentedQuick.getNumberOfSwaps());
 	}
 

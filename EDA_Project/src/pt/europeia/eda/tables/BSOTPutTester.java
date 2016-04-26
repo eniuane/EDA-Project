@@ -1,16 +1,16 @@
-package pt.europeia.eda.sortAlgorithms;
+package pt.europeia.eda.tables;
 
 import static java.lang.System.out;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
 
-public class QuickTester {
+public class BSOTPutTester {
 
-	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 
 	public static final double maxTimeForAnExperiment = 30.0;
 
@@ -43,14 +43,16 @@ public class QuickTester {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final Double[] originalArray = readAllDoubles(in);
-		final Double[] arrayToSort = new Double[originalArray.length];
+		final Double trashValue = 0.0;
+		final Double[] keys = readAllDoubles(in);
 
 		final Stopwatch stopwatch = new Stopwatch();
 		int contiguousRepetitions = 0;
 		do {
-			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
-			Quick.sort(arrayToSort);
+			final BinarySearchOrderedTable<Double,Double> table = new BinarySearchOrderedTable<Double,Double>();
+			for (int i = 0; i != limit; i++)
+				table.put(keys[i],trashValue);
+
 			contiguousRepetitions++;
 
 		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
@@ -60,16 +62,18 @@ public class QuickTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-		final Double[] originalArray = readAllDoubles(in);
-		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
+		final Double trashValue = 0.0;
+		final Double[] keys = readAllDoubles(in);
+		final ArrayList<BinarySearchOrderedTable<Double, Double>> tables = new ArrayList<BinarySearchOrderedTable<Double, Double>>();
 		for (int i = 0; i != contiguousRepetitions; i++)
-			listOfArraysToSort.add(originalArray.clone());
-
+			tables.add(new BinarySearchOrderedTable<Double, Double>());
+		
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final Double[] numbersToSort = listOfArraysToSort.get(i);
-			Quick.sort(numbersToSort);
-			listOfArraysToSort.set(i, null);
+			final BinarySearchOrderedTable<Double, Double> table = tables.get(i);
+			for (int j = 0; j != limit; j++)
+				table.put(keys[j], trashValue);
+			tables.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
@@ -88,9 +92,10 @@ public class QuickTester {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup) {
-			out.println("Sorted " + limit + " \t median= " + median + "\t Average= " + average + "\t Minimum= "
-					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions + "\t ContiguousReps = " + contiguousRepetitions);
+			out.println("Put " + limit + " values \t median= " + median + "\t Average= "
+					+ average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
+					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions + "\t ContiguousReps= "
+					+ contiguousRepetitions);
 		}
 	}
 

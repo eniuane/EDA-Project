@@ -43,7 +43,7 @@ public class SSTablePutKeyDontExistTester {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
 		int contiguousRepetitions = 1;
 
@@ -52,7 +52,7 @@ public class SSTablePutKeyDontExistTester {
 			for (int i = 0; i != contiguousRepetitions; i++) {
 				tables.add(new SequentialSearchTable<Double, Double>());
 				for (int j = 0; j != limit; j++)
-					tables.get(i).put(keys[j], keys[j]);
+					tables.get(i).put(keys[j], trashValue);
 			}
 
 			StdRandom.shuffle(keys);
@@ -71,13 +71,13 @@ public class SSTablePutKeyDontExistTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
 		final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			tables.add(new SequentialSearchTable<Double, Double>());
 			for (int j = 0; j != limit; j++)
-				tables.get(i).put(keys[j], keys[j]);
+				tables.get(i).put(keys[j], trashValue);
 		}
 
 		StdRandom.shuffle(keys);

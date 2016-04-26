@@ -1,16 +1,16 @@
-package pt.europeia.eda.tables;
+package pt.europeia.eda.sortAlgorithms;
 
 import static java.lang.System.out;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
 
-public class searchtest {
+public class OptimizedQuickTester {
 
-	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
+	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
 
 	public static final double maxTimeForAnExperiment = 30.0;
 
@@ -43,41 +43,35 @@ public class searchtest {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
+		final Double[] originalArray = readAllDoubles(in);
+		final Double[] arrayToSort = new Double[originalArray.length];
 
-		final Double[] keys = readAllDoubles(in);
+		final Stopwatch stopwatch = new Stopwatch();
+		int contiguousRepetitions = 0;
+		do {
+			System.arraycopy(originalArray, 0, arrayToSort, 0, originalArray.length);
+			OptimizedQuick.sort(arrayToSort);
+			contiguousRepetitions++;
 
-		int contiguousRepetitions = 1;
-		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
-				SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
-				for (int j = 0; j != limit; j++)
-					table.put(keys[j], keys[j]);
+		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
 
-			final Stopwatch stopwatch = new Stopwatch();
-			for (int i = 0; i != contiguousRepetitions; i++) {
-				for (int j = 0; j != limit; j++)
-					table.valueFor(keys[j]);
-			}
-			if (stopwatch.elapsedTime() >= minimumTimePerContiguousRepetitions)
-				break;
-		}
 		return contiguousRepetitions;
 	}
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
+		final Double[] originalArray = readAllDoubles(in);
+		final ArrayList<Double[]> listOfArraysToSort = new ArrayList<Double[]>();
+		for (int i = 0; i != contiguousRepetitions; i++)
+			listOfArraysToSort.add(originalArray.clone());
 
-		final Double[] keys = readAllDoubles(in);
-		final SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
-		for (int i = 0; i != limit; i++)
-			table.put(keys[i], keys[i]);
-
-		
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			for (int j = 0; j != limit; j++)
-				table.valueFor(keys[j]);
+			final Double[] numbersToSort = listOfArraysToSort.get(i);
+			OptimizedQuick.sort(numbersToSort);
+			listOfArraysToSort.set(i, null);
 		}
-		return (stopwatch.elapsedTime() / contiguousRepetitions) / limit;
+		return stopwatch.elapsedTime() / contiguousRepetitions;
 	}
 
 	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {
@@ -94,9 +88,9 @@ public class searchtest {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup) {
-			out.println("Searched 1 item in " + limit + " table \t median= " + median + "\t Average= " + average + "\t Minimum= "
+			out.println("Sorted " + limit + " \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
-					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
+					+ "\t Reps= " + repetitions + "\t ContiguousReps = " + contiguousRepetitions);
 		}
 	}
 

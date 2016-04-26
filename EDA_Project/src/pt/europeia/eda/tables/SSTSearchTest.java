@@ -8,7 +8,7 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
 
-public class SSTablePutTester {
+public class SSTSearchTest {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 
@@ -43,25 +43,19 @@ public class SSTablePutTester {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
+
 		int contiguousRepetitions = 1;
-
 		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
-			final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
-			for (int i = 0; i != contiguousRepetitions; i++) {
-				tables.add(new SequentialSearchTable<Double, Double>());
+				SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
 				for (int j = 0; j != limit; j++)
-					tables.get(i).put(keys[j], keys[j]);
-			}
+					table.put(keys[j], trashValue);
 
-			StdRandom.shuffle(keys);
-			
 			final Stopwatch stopwatch = new Stopwatch();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				final SequentialSearchTable<Double, Double> table = tables.get(i);
-				table.put(keys[0], keys[0]);
-				tables.set(i, null);
+				for (int j = 0; j != limit; j++)
+					table.valueFor(keys[j]);
 			}
 			if (stopwatch.elapsedTime() >= minimumTimePerContiguousRepetitions)
 				break;
@@ -71,23 +65,20 @@ public class SSTablePutTester {
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
+		final Double trashValue = 0.0;
 
 		final Double[] keys = readAllDoubles(in);
-		final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
-		for (int i = 0; i != contiguousRepetitions; i++) {
-			tables.add(new SequentialSearchTable<Double, Double>());
-			for (int j = 0; j != limit; j++)
-				tables.get(i).put(keys[j], keys[j]);
-		}
+		final SequentialSearchTable<Double, Double> table = new SequentialSearchTable<Double, Double>();
+		for (int i = 0; i != limit; i++)
+			table.put(keys[i], trashValue);
+
 		
-		StdRandom.shuffle(keys);
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final SequentialSearchTable<Double, Double> table = tables.get(i);
-			table.put(keys[0], keys[0]);
-			tables.set(i, null);
+			for (int j = 0; j != limit; j++)
+				table.valueFor(keys[j]);
 		}
-		return stopwatch.elapsedTime() / contiguousRepetitions;
+		return (stopwatch.elapsedTime() / contiguousRepetitions) / limit;
 	}
 
 	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {
@@ -104,7 +95,7 @@ public class SSTablePutTester {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup) {
-			out.println("Put one value in a table with " + limit + " values \t median= " + median + "\t Average= " + average + "\t Minimum= "
+			out.println("Searched 1 item in " + limit + " table \t median= " + median + "\t Average= " + average + "\t Minimum= "
 					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
 					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 		}

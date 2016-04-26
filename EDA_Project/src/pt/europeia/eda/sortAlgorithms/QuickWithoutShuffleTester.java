@@ -11,6 +11,7 @@ import pt.europeia.eda.Stopwatch;
 public class QuickWithoutShuffleTester {
 
 	public static final double timeBudgetPerExperiment = 2.0 /* seconds */;
+	
 	public static final double maxTimeForAnExperiment = 30.0;
 
 	public static final double minimumTimePerContiguousRepetitions = 1e-5 /* seconds */;

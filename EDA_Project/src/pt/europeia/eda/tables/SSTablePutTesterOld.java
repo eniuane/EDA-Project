@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
-import pt.europeia.eda.stacks.Stack;
 
-public class test {
+public class SSTablePutTesterOld {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 
@@ -44,36 +43,48 @@ public class test {
 
 	public static int contiguousRepetitionsFor(final int limit, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
+		int contiguousRepetitions = 1;
 
-		final Stopwatch stopwatch = new Stopwatch();
-		int contiguousRepetitions = 0;
-		do {
-			final SequentialSearchTable<Double,Double> table = new SequentialSearchTable<Double,Double>();
-			for (int i = 0; i != limit; i++)
-				table.put(keys[i],keys[i]);
+		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
+			final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
+			for (int i = 0; i != contiguousRepetitions; i++) {
+				tables.add(new SequentialSearchTable<Double, Double>());
+				for (int j = 0; j != limit; j++)
+					tables.get(i).put(keys[j], trashValue);
+			}
 
-			contiguousRepetitions++;
-
-		} while (stopwatch.elapsedTime() < minimumTimePerContiguousRepetitions);
-
+			StdRandom.shuffle(keys);
+			
+			final Stopwatch stopwatch = new Stopwatch();
+			for (int i = 0; i != contiguousRepetitions; i++) {
+				final SequentialSearchTable<Double, Double> table = tables.get(i);
+				table.put(keys[0], keys[0]);
+				tables.set(i, null);
+			}
+			if (stopwatch.elapsedTime() >= minimumTimePerContiguousRepetitions)
+				break;
+		}
 		return contiguousRepetitions;
 	}
 
 	public static double executionTimeFor(final int limit, final int contiguousRepetitions, final String fileToSort) {
 		final In in = new In(fileToSort + limit + ".txt");
-
+		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
 		final ArrayList<SequentialSearchTable<Double, Double>> tables = new ArrayList<SequentialSearchTable<Double, Double>>();
-		for (int i = 0; i != contiguousRepetitions; i++)
+		for (int i = 0; i != contiguousRepetitions; i++) {
 			tables.add(new SequentialSearchTable<Double, Double>());
+			for (int j = 0; j != limit; j++)
+				tables.get(i).put(keys[j], trashValue);
+		}
 		
+		StdRandom.shuffle(keys);
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			final SequentialSearchTable<Double, Double> table = tables.get(i);
-			for (int j = 0; j != limit; j++)
-				table.put(keys[j], keys[j]);
+			table.put(keys[0], keys[0]);
 			tables.set(i, null);
 		}
 		return stopwatch.elapsedTime() / contiguousRepetitions;
@@ -93,10 +104,9 @@ public class test {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup) {
-			out.println("Put " + limit + " values \t median= " + median + "\t Average= "
-					+ average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
-					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions + "\t ContiguousReps= "
-					+ contiguousRepetitions);
+			out.println("Put one value in a table with " + limit + " values \t median= " + median + "\t Average= " + average + "\t Minimum= "
+					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 		}
 	}
 
