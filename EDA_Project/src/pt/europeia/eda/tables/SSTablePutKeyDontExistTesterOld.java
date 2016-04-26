@@ -8,7 +8,7 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdRandom;
 import pt.europeia.eda.Stopwatch;
 
-public class SSTablePutKeyDontExistTester {
+public class SSTablePutKeyDontExistTesterOld {
 
 	public static final double timeBudgetPerExperiment = 2.0; /* seconds */
 

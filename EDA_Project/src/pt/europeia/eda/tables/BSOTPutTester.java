@@ -75,7 +75,7 @@ public class BSOTPutTester {
 				table.put(keys[j], trashValue);
 			tables.set(i, null);
 		}
-		return stopwatch.elapsedTime() / contiguousRepetitions;
+		return (stopwatch.elapsedTime() / contiguousRepetitions) / limit;
 	}
 
 	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {

@@ -44,10 +44,9 @@ public class BSOTDeleteTest {
 		final In in = new In(fileToSort + limit + ".txt");
 		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
-		
+
 		int contiguousRepetitions = 1;
-		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2)
-		{
+		for (int exponent = 0; exponent != 31; exponent++, contiguousRepetitions *= 2) {
 			final ArrayList<BinarySearchOrderedTable<Double, Double>> tables = new ArrayList<BinarySearchOrderedTable<Double, Double>>();
 			for (int i = 0; i != contiguousRepetitions; i++) {
 				tables.add(new BinarySearchOrderedTable<Double, Double>());
@@ -57,7 +56,7 @@ public class BSOTDeleteTest {
 
 			final Stopwatch stopwatch = new Stopwatch();
 			for (int i = 0; i != contiguousRepetitions; i++) {
-				final BinarySearchOrderedTable<Double,Double> table = tables.get(i);
+				final BinarySearchOrderedTable<Double, Double> table = tables.get(i);
 				for (int j = 0; j != limit; j++) {
 					table.delete(keys[j]);
 				}
@@ -73,7 +72,7 @@ public class BSOTDeleteTest {
 		final In in = new In(fileToSort + limit + ".txt");
 		final Double trashValue = 0.0;
 		final Double[] keys = readAllDoubles(in);
-		
+
 		final ArrayList<BinarySearchOrderedTable<Double, Double>> tables = new ArrayList<BinarySearchOrderedTable<Double, Double>>();
 		for (int i = 0; i != contiguousRepetitions; i++) {
 			tables.add(new BinarySearchOrderedTable<Double, Double>());
@@ -83,13 +82,13 @@ public class BSOTDeleteTest {
 
 		final Stopwatch stopwatch = new Stopwatch();
 		for (int i = 0; i != contiguousRepetitions; i++) {
-			final BinarySearchOrderedTable<Double,Double> table = tables.get(i);
+			final BinarySearchOrderedTable<Double, Double> table = tables.get(i);
 			for (int j = 0; j != limit; j++) {
 				table.delete(keys[j]);
 			}
 			tables.set(i, null);
 		}
-		return stopwatch.elapsedTime() / contiguousRepetitions;
+		return (stopwatch.elapsedTime() / contiguousRepetitions) / limit;
 	}
 
 	public static void performExperimentsFor(final int limit, final boolean isWarmup, final String fileToSort) {
@@ -106,10 +105,9 @@ public class BSOTDeleteTest {
 		final double average = averageOf(executionTimes);
 
 		if (!isWarmup) {
-			out.println("Deleted " + limit + " values \t median= " + median + "\t Average= "
-					+ average + "\t Minimum= " + executionTimes.get(0) + "\t Maximum= "
-					+ executionTimes.get(executionTimes.size() - 1) + "\t Reps= " + repetitions + "\t ContiguousReps= "
-					+ contiguousRepetitions);
+			out.println("Deleted " + limit + " values \t median= " + median + "\t Average= " + average + "\t Minimum= "
+					+ executionTimes.get(0) + "\t Maximum= " + executionTimes.get(executionTimes.size() - 1)
+					+ "\t Reps= " + repetitions + "\t ContiguousReps= " + contiguousRepetitions);
 		}
 	}
 
